@@ -19,7 +19,7 @@ class AppColors {
   // Dark Theme Colors
   static const Color darkText = Colors.white;
   static const Color darkHint = Colors.grey;
-  static const Color darkInputFill = Color(0xFFF5F5F5);
+  static const Color darkInputFill = Color(0xFF303030);
   static const Color darkBorder = Color(0xFF707070);
   static const Color darkFocusedBorder = Colors.brown;
   static const Color darkButton = Color(0xFF5D4037);
