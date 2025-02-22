@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hotelino/core/theme/app_theme.dart';
 import 'package:hotelino/core/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -18,5 +19,23 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {}
+  Widget build(BuildContext context) {
+    return Consumer<ThemeProvider>(
+      builder: (context, themeModeProvider, child) {
+        return MaterialApp(
+          theme: themeModeProvider.brightness == Brightness.light ? AppTheme.lightTheme : AppTheme.darkTheme,
+          home: Scaffold(
+            appBar: AppBar(),
+            body: Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    themeModeProvider.toggleTheme();
+                  },
+                  child: Text('change theme')),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
