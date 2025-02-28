@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hotelino/features/home/homePage.dart';
-import 'package:hotelino/features/onboarding/OnboardingPage.dart';
+import 'package:hotelino/features/onboarding/presentation/onboarding_page.dart';
 
 class AppRoute {
   static const String home = '/';
