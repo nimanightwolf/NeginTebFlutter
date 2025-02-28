@@ -34,12 +34,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   title: data["title"]!, description: data["description"]!, image: data["image"]!);
             },
           )),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           buildPageIndicator(onboardingProvider.currentPage, totalPages, context),
           const SizedBox(
             height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [],
+            ),
           ),
         ],
       ),
@@ -59,6 +66,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           width: currentIndex == index ? 12 : 8,
           height: currentIndex == index ? 12 : 8,
           decoration: BoxDecoration(
+              shape: BoxShape.circle,
               color: currentIndex == index
                   ? theme.colorScheme.primary
                   : theme.colorScheme.primary.withValues(alpha: 0.3)),
