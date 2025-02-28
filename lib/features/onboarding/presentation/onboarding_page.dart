@@ -34,7 +34,35 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   title: data["title"]!, description: data["description"]!, image: data["image"]!);
             },
           )),
+          SizedBox(
+            height: 20,
+          ),
+          buildPageIndicator(onboardingProvider.currentPage, totalPages, context),
+          const SizedBox(
+            height: 20,
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget buildPageIndicator(int currentIndex, int totalPages, BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        totalPages,
+        (index) => AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          width: currentIndex == index ? 12 : 8,
+          height: currentIndex == index ? 12 : 8,
+          decoration: BoxDecoration(
+              color: currentIndex == index
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.primary.withValues(alpha: 0.3)),
+        ),
       ),
     );
   }
