@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:hotelino/bootstrap.dart';
 import 'package:hotelino/core/theme/app_theme.dart';
