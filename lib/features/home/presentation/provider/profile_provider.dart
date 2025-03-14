@@ -24,6 +24,7 @@ class ProfileProvider extends ChangeNotifier {
 
   loadUserProfile() async {
     _profile = await _profileRepository.fetchUserProfile();
+    notifyListeners();
   }
 
   // Recently Viewed Hotels ---------------------------------------------------------------
