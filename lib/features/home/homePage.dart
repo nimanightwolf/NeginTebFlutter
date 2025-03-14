@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:hotelino/features/home/presentation/provider/home_provider.dart';
+import 'package:hotelino/features/home/presentation/widgets/ad_banner.dart';
 import 'package:hotelino/features/home/presentation/widgets/home_appbar.dart';
+import 'package:hotelino/features/home/presentation/widgets/search_bar.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -14,7 +16,21 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: HomeAppBar(),
-      body: Center(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: const [
+            SizedBox(
+              height: 16,
+            ),
+            SearchBarWidget(),
+            SizedBox(
+              height: 16,
+            ),
+            AdBanner(),
+          ],
+        ),
+      ),
     );
   }
 }
