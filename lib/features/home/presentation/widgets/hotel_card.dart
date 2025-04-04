@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:hotelino/core/utils/network.dart';
 import 'package:hotelino/core/utils/price_formatter.dart';
 import 'package:hotelino/features/home/data/models/hotel.dart';
 import 'package:hotelino/features/home/presentation/provider/favorite_item_provider.dart';
@@ -25,7 +26,17 @@ class HotelCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Stack(
-              children: [],
+              children: [
+                ClipRRect(
+                  borderRadius:
+                      BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                  child: Image.network(
+                    networkUrl(hotel.images[0]),
+                    height: 200,
+                    width: double.infinity,
+                  ),
+                ),
+              ],
             ),
             Expanded(
                 child: Column(
