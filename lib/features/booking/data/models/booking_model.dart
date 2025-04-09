@@ -3,7 +3,7 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 class BookingModel {
   String fullName;
   String destination;
-  JalaliRange? checkInOutRangeDate;
+  JalaliRange? cehckInOutRangeDate;
 
   String numberOfGuests;
   String phoneNumber;
@@ -11,7 +11,7 @@ class BookingModel {
   BookingModel(
       {this.fullName = '',
       this.destination = '',
-      this.checkInOutRangeDate,
+      this.cehckInOutRangeDate,
       this.numberOfGuests = '',
       this.phoneNumber = ''});
 }
