@@ -47,7 +47,9 @@ class AppTheme {
         colorScheme: baseLight.colorScheme.copyWith(
             outline: Colors.grey[500],
             primaryFixed: AppColors.primary,
-            surfaceContainerLow: Colors.grey[200]));
+            surfaceContainerLow: Colors.grey[200]),
+        inputDecorationTheme:
+            baseLight.inputDecorationTheme.copyWith(fillColor: baseLight.colorScheme.surface));
   }
 
   // ---------------------------------------------------------------------------
@@ -96,8 +98,10 @@ class AppTheme {
 
     return baseDark.copyWith(
         colorScheme: baseDark.colorScheme.copyWith(
-      outline: Colors.grey[500],
-      primaryFixed: AppColors.primary,
-    ));
+          outline: Colors.grey[500],
+          primaryFixed: AppColors.primary,
+        ),
+        inputDecorationTheme:
+            baseDark.inputDecorationTheme.copyWith(fillColor: baseDark.colorScheme.surface));
   }
 }
