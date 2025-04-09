@@ -33,7 +33,14 @@ class _BookingPageState extends State<BookingPage> {
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Consumer<BookingProvider>(
-            builder: (context, bookingProvider, child) {},
+            builder: (context, bookingProvider, child) {
+              return Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [],
+                  ));
+            },
           ),
         ),
       ),
