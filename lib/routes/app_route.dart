@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/home/homePage.dart';
+import 'package:hotelino/features/home/presentation/homePage.dart';
 import 'package:hotelino/features/onboarding/presentation/onboarding_page.dart';
 import 'package:hotelino/routes/main_bottom_nav.dart';
 
