@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class BookingPage extends StatefulWidget {
   static final GlobalKey<BookingPageState> bookingPageKey = GlobalKey<BookingPageState>();
 
-  BookingPage({super.key});
+  BookingPage({Key? key}) : super(key: bookingPageKey);
 
   @override
   State<BookingPage> createState() => BookingPageState();
