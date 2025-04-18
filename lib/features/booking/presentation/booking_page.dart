@@ -25,6 +25,7 @@ class BookingPageState extends State<BookingPage> {
       Duration(milliseconds: 100),
       () {
         _formKey.currentState?.reset();
+        TermsWidget.termsKey.currentState?.resetCheckbox();
         setState(() {});
       },
     );

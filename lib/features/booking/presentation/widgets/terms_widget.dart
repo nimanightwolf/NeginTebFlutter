@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class TermsWidget extends StatefulWidget {
-  const TermsWidget({super.key});
+  static final GlobalKey<_TermsWidgetState> termsKey = GlobalKey<_TermsWidgetState>();
+
+  TermsWidget({Key? key}) : super(key: termsKey);
 
   @override
   State<TermsWidget> createState() => _TermsWidgetState();
@@ -9,6 +11,12 @@ class TermsWidget extends StatefulWidget {
 
 class _TermsWidgetState extends State<TermsWidget> {
   bool isChecked = false;
+
+  resetCheckbox() {
+    setState(() {
+      isChecked = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +50,7 @@ class _TermsWidgetState extends State<TermsWidget> {
           },
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           activeColor: Theme.of(context).colorScheme.primary,
-          visualDensity: VisualDensity(horizontal: -4),
+          visualDensity: const VisualDensity(horizontal: -4),
         )
       ],
     );
