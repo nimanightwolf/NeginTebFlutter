@@ -40,8 +40,9 @@ class _TermsWidgetState extends State<TermsWidget> {
               isChecked = value ?? false;
             });
           },
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           activeColor: Theme.of(context).colorScheme.primary,
+          visualDensity: VisualDensity(horizontal: -4),
         )
       ],
     );
