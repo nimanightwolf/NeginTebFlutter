@@ -56,8 +56,8 @@ class NumberFormFieldState extends State<NumberFormField> {
   }
 
   void resetEnteredNumber() {
+    _controller.clear();
     setState(() {
-      _controller.clear();
       _textAlign = TextAlign.right;
       selectedCountry = countries[0];
     });
@@ -77,11 +77,6 @@ class NumberFormFieldState extends State<NumberFormField> {
       validator: widget.validator,
       onSaved: widget.onSaved,
       builder: (FormFieldState<String> field) {
-        // sync values
-        if (field.value != _controller.text) {
-          field.didChange(_controller.text);
-        }
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
