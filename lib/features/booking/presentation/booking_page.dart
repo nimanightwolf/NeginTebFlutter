@@ -141,7 +141,17 @@ class BookingPageState extends State<BookingPage> {
                           }
                         },
                       ),
-                      TermsWidget(),
+                      TermsWidget(
+                        initialValue: false,
+                        validator: (value) {
+                          if (value == null || value == false) {
+                            return 'لطفا قوانین برنامه را تایید کنید';
+                          }
+                          return null;
+                        },
+                        onSaved: (newValue) {},
+                      ),
+                      SizedBox(height: 8),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(

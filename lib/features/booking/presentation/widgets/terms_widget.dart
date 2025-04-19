@@ -54,28 +54,32 @@ class _TermsWidgetState extends State<TermsWidget> {
                       textDirection: TextDirection.rtl,
                     ),
                   ),
-                  Checkbox(
-                    value: isChecked,
-                    onChanged: (value) {
-                      setState(() {
-                        isChecked = value ?? false;
-                      });
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                  Padding(
+                    padding: EdgeInsets.only(top: 8),
+                    child: Checkbox(
+                      value: isChecked,
                       side: BorderSide(
                           color: field.hasError
-                              ? Theme.of(field.context).colorScheme.error
-                              : Theme.of(field.context).colorScheme.primary),
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.primary,
+                          width: field.hasError ? 1 : 1.5),
+                      onChanged: (value) {
+                        setState(() {
+                          isChecked = value ?? false;
+                        });
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                     ),
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    visualDensity: const VisualDensity(horizontal: -4),
                   )
                 ],
               ),
               if (field.hasError)
                 Padding(
-                  padding: const EdgeInsets.only(top: 8, right: 12),
+                  padding: const EdgeInsets.only(right: 12),
                   child: Text(
                     field.errorText ?? '',
                     style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 12),
