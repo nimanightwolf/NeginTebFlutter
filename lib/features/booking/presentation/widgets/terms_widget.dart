@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hotelino/core/constants/constants.dart';
 
 class TermsWidget extends StatefulWidget {
   static final GlobalKey<_TermsWidgetState> termsKey = GlobalKey<_TermsWidgetState>();
@@ -31,38 +32,42 @@ class _TermsWidgetState extends State<TermsWidget> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      _showTermsDialog(context);
-                    },
-                    child: RichText(
-                      text: TextSpan(
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
-                          children: [
-                            const TextSpan(text: "قوانین برنامه "),
-                            TextSpan(
-                                text: "هتلینو",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Theme.of(context).colorScheme.primary)),
-                            const TextSpan(text: " را خوانده و آنها را میپذیرم."),
-                          ]),
-                      textDirection: TextDirection.rtl,
+              Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        _showTermsDialog(context);
+                      },
+                      child: RichText(
+                        text: TextSpan(
+                            style:
+                                Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
+                            children: [
+                              const TextSpan(text: "قوانین برنامه "),
+                              TextSpan(
+                                  text: "هتلینو",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context).colorScheme.primary)),
+                              const TextSpan(text: " را خوانده و آنها را میپذیرم."),
+                            ]),
+                        textDirection: TextDirection.rtl,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: Checkbox(
+                    Checkbox(
                       value: isChecked,
                       side: BorderSide(
                           color: field.hasError
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).colorScheme.primary,
-                          width: field.hasError ? 1 : 1.5),
+                              ? isChecked
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.error
+                              : isChecked
+                                  ? Theme.of(context).colorScheme.primary
+                                  : AppColors.lightBorder,
+                          width: field.hasError ? 1.3 : 2),
                       onChanged: (value) {
                         setState(() {
                           isChecked = value ?? false;
@@ -73,9 +78,9 @@ class _TermsWidgetState extends State<TermsWidget> {
                       ),
                       activeColor: Theme.of(context).colorScheme.primary,
                       visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
               if (field.hasError)
                 Padding(
