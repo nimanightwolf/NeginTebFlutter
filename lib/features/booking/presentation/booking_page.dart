@@ -26,6 +26,7 @@ class BookingPageState extends State<BookingPage> {
       () {
         _formKey.currentState?.reset();
         TermsWidget.termsKey.currentState?.resetCheckbox();
+        NumberFormField.numberFieldKey.currentState?.resetEnteredNumber();
         setState(() {});
       },
     );
@@ -164,6 +165,8 @@ class BookingPageState extends State<BookingPage> {
                                   textDirection: TextDirection.rtl,
                                 )),
                               );
+
+                              resetForm(); // reset form after user submit data
                             }
                           },
                           child: Text("جستجو هتل ها"),

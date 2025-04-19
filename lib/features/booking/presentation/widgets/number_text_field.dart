@@ -3,16 +3,17 @@ import 'package:hotelino/core/constants/constants.dart';
 import 'package:hotelino/features/booking/data/models/country.dart';
 
 class NumberFormField extends StatefulWidget {
+  static final GlobalKey<NumberFormFieldState> numberFieldKey = GlobalKey<NumberFormFieldState>();
+
   final String initialValue;
   final FormFieldValidator<String>? validator;
   final FormFieldSetter<String>? onSaved;
 
-  const NumberFormField({
-    super.key,
+  NumberFormField({
     required this.initialValue,
     required this.validator,
     required this.onSaved,
-  });
+  }) : super(key: numberFieldKey);
 
   @override
   NumberFormFieldState createState() => NumberFormFieldState();
@@ -54,6 +55,21 @@ class NumberFormFieldState extends State<NumberFormField> {
     });
   }
 
+  void resetEnteredNumber() {
+    setState(() {
+      _controller.clear();
+      _textAlign = TextAlign.right;
+      selectedCountry = countries[0];
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FormField<String>(
@@ -61,6 +77,11 @@ class NumberFormFieldState extends State<NumberFormField> {
       validator: widget.validator,
       onSaved: widget.onSaved,
       builder: (FormFieldState<String> field) {
+        // sync values
+        if (field.value != _controller.text) {
+          field.didChange(_controller.text);
+        }
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
