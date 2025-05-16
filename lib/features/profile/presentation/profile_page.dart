@@ -31,10 +31,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _showSnackbar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-      message,
-      textDirection: TextDirection.rtl,
-    )));
+      content: Text(
+        message,
+        textDirection: TextDirection.rtl,
+      ),
+      behavior: SnackBarBehavior.floating,
+      elevation: 3,
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      duration: Duration(seconds: 2),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ));
   }
 
   @override
