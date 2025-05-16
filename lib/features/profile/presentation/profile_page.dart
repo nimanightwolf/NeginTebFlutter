@@ -73,6 +73,23 @@ class _ProfilePageState extends State<ProfilePage> {
                         )),
                   ],
                 ),
+                SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  profile.name,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  profile.email,
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.grey),
+                ),
+                SizedBox(
+                  height: 24,
+                ),
               ],
             ),
           )),
