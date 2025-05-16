@@ -36,12 +36,16 @@ class ProfileOptionItem extends StatelessWidget {
               ),
               Container(
                 padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(color: Color(0xFFF4EAE2), borderRadius: BorderRadius.circular(12)),
-                child: Icon(
-                  icon,
-                  size: 20,
-                  color: AppColors.darkFocusedBorder,
-                ),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.darkFocusedBorder
+                        : Color(0xFFF4EAE2),
+                    borderRadius: BorderRadius.circular(12)),
+                child: Icon(icon,
+                    size: 20,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : AppColors.darkFocusedBorder),
               )
             ],
           ),
