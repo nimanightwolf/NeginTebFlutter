@@ -166,7 +166,7 @@ class BookingPageState extends State<BookingPage> {
                                 )),
                               );
 
-                              resetForm(); // reset form after user submit data
+                              resetForm();
                             }
                           },
                           child: Text("جستجو هتل ها"),
