@@ -145,7 +145,7 @@ class HotelDetailPage extends StatelessWidget {
                                     color: Colors.grey,
                                   ),
                                 ),
-                                const SizedBox(height: 6),
+                                SizedBox(height: 6),
                                 Text(
                                   a,
                                   style: textTheme.bodySmall!.copyWith(color: Colors.black87),
@@ -196,7 +196,25 @@ class HotelDetailPage extends StatelessWidget {
                             );
                           },
                         ),
-                      )
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text(
+                        "توضیحات",
+                        style: textTheme.headlineSmall,
+                        textDirection: TextDirection.rtl,
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        hotel.description,
+                        style: textTheme.bodyMedium!.copyWith(height: 1.5),
+                        textDirection: TextDirection.rtl,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 8,
+                      ),
                     ],
                   ),
                 ),
