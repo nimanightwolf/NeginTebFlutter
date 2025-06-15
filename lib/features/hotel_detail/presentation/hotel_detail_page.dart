@@ -1,10 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:hotelino/core/utils/network.dart';
 import 'package:hotelino/features/home/data/models/hotel.dart';
 import 'package:hotelino/features/home/data/repositories/hotel_repository.dart';
 import 'package:hotelino/shared/services/json_data_service.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class HotelDetailPage extends StatelessWidget {
@@ -234,7 +236,64 @@ class HotelDetailPage extends StatelessWidget {
                             textDirection: TextDirection.rtl,
                           )
                         ],
-                      )
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 200,
+                          child: FlutterMap(
+                            options: MapOptions(
+                              initialZoom: 15.0,
+                              initialCenter: LatLng(hotel.location.latitude, hotel.location.longitude),
+                              interactionOptions: InteractionOptions(
+                                flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                              ),
+                            ),
+                            children: [
+                              TileLayer(
+                                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                userAgentPackageName: 'ir.dunijet.hotelino',
+                              ),
+                              MarkerLayer(
+                                markers: [
+                                  Marker(
+                                      point: LatLng(hotel.location.latitude, hotel.location.longitude),
+                                      width: 80,
+                                      height: 80,
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            Icons.location_pin,
+                                            color: Colors.red,
+                                            size: 40,
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                            color: Colors.white.withOpacity(0.8),
+                                            child: Text(
+                                              hotel.name,
+                                              style: textTheme.bodySmall!.copyWith(color: Colors.black),
+                                              textDirection: TextDirection.rtl,
+                                              textAlign: TextAlign.center,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 0,
+                      ),
                     ],
                   ),
                 ),
