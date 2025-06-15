@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:hotelino/core/utils/network.dart';
 import 'package:hotelino/features/home/data/models/hotel.dart';
 import 'package:hotelino/features/home/data/repositories/hotel_repository.dart';
+import 'package:hotelino/features/hotel_detail/presentation/full_screen_image_shower.dart';
 import 'package:hotelino/features/hotel_detail/presentation/full_screen_map_page.dart';
 import 'package:hotelino/shared/services/json_data_service.dart';
 import 'package:latlong2/latlong.dart';
@@ -40,7 +41,12 @@ class HotelDetailPage extends StatelessWidget {
                 pinned: false,
                 flexibleSpace: FlexibleSpaceBar(
                   background: GestureDetector(
-                    onLongPress: () {},
+                    onLongPress: () {
+                      PersistentNavBarNavigator.pushNewScreen(context,
+                          screen: FullScreenImageShower(myImageUrl: hotel.images.first),
+                          withNavBar: false,
+                          pageTransitionAnimation: PageTransitionAnimation.cupertino);
+                    },
                     child: Image.network(fit: BoxFit.cover, networkUrl(hotel.images.first)),
                   ),
                 ),
@@ -182,7 +188,14 @@ class HotelDetailPage extends StatelessWidget {
                             return Row(
                               children: [
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    PersistentNavBarNavigator.pushNewScreen(context,
+                                        screen: FullScreenImageShower(
+                                          myImageUrl: hotel.images[index],
+                                        ),
+                                        withNavBar: false,
+                                        pageTransitionAnimation: PageTransitionAnimation.cupertino);
+                                  },
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.network(
