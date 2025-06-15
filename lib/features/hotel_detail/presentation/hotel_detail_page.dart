@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:hotelino/core/utils/network.dart';
 import 'package:hotelino/features/home/data/models/hotel.dart';
@@ -215,6 +217,24 @@ class HotelDetailPage extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         maxLines: 8,
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                // full screen map
+                              },
+                              child: Text(
+                                "تمام صفحه",
+                                textDirection: TextDirection.rtl,
+                              )),
+                          Text(
+                            "موقعیت مکانی هتل روی نقشه",
+                            style: textTheme.headlineSmall,
+                            textDirection: TextDirection.rtl,
+                          )
+                        ],
+                      )
                     ],
                   ),
                 ),
