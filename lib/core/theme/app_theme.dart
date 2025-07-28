@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/core/constants/constants.dart';
+import 'package:neginteb/core/constants/constants.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {

@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hotelino/core/constants/constants.dart';
-import 'package:hotelino/core/utils/keyboard.dart';
-import 'package:hotelino/features/booking/presentation/booking_page.dart';
-import 'package:hotelino/features/favorite/presentation/favorite_page.dart';
-import 'package:hotelino/features/home/presentation/homePage.dart';
-import 'package:hotelino/features/profile/presentation/profile_page.dart';
+import 'package:neginteb/core/constants/constants.dart';
+import 'package:neginteb/core/utils/keyboard.dart';
+import 'package:neginteb/features/booking/presentation/booking_page.dart';
+import 'package:neginteb/features/favorite/presentation/favorite_page.dart';
+import 'package:neginteb/features/home/presentation/homePage.dart';
+import 'package:neginteb/features/profile/presentation/profile_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class MainButtomNav extends StatefulWidget {
@@ -28,7 +28,7 @@ class _MainButtomNavState extends State<MainButtomNav> {
   }
 
   _buildScreens() {
-    return [HomePage(), FavoritePage(), BookingPage(), ProfilePage()];
+    return [HomePage(), FavoritePage(),BookingPage(), ProfilePage()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -49,28 +49,28 @@ class _MainButtomNavState extends State<MainButtomNav> {
           )),
       PersistentBottomNavBarItem(
           icon: SvgPicture.asset(
-            "assets/images/nav_favorite.svg",
+            "assets/images/nav_shopping.svg",
             width: 20,
             height: 20,
             colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
           activeColorPrimary: AppColors.primary,
           inactiveIcon: SvgPicture.asset(
-            "assets/images/nav_favorite.svg",
+            "assets/images/nav_shopping.svg",
             width: 20,
             height: 20,
             colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
           )),
       PersistentBottomNavBarItem(
           icon: SvgPicture.asset(
-            "assets/images/nav_booking.svg",
+            "assets/images/nav_category.svg",
             width: 20,
             height: 20,
             colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
           activeColorPrimary: AppColors.primary,
           inactiveIcon: SvgPicture.asset(
-            "assets/images/nav_booking.svg",
+            "assets/images/nav_category.svg",
             width: 20,
             height: 20,
             colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),

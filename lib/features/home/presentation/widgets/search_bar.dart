@@ -34,7 +34,7 @@ class SearchBarWidget extends StatelessWidget {
                 decoration: InputDecoration(
                     filled: false,
                     hintTextDirection: TextDirection.rtl,
-                    hintText: "جستجو در بین هتل ها",
+                    hintText: "جستجو در محصولات",
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,

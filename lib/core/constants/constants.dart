@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/home/data/models/homepage_data.dart';
+import 'package:neginteb/features/home/data/models/homepage_data.dart';
 
 class AppConstants {
   static const String baseUrlImage = "https://dunijet.ir/content/projects/hotelino/";
@@ -8,7 +8,7 @@ class AppConstants {
 }
 
 class AppColors {
-  static const Color primary = Color(0xFFB27258);
+  static const Color primary = Color(0xFF63a002);
 
   // Light Theme Colors
   static const Color lightText = Colors.black;
@@ -23,7 +23,7 @@ class AppColors {
   static const Color darkInputFill = Color(0xFF303030);
   static const Color darkBorder = Color(0xFF707070);
   static const Color darkFocusedBorder = Colors.brown;
-  static const Color darkButton = Color(0xFF5D4037);
+  static const Color darkButton = Color(0xFF364f17);
 }
 
 class HomePageDataConstants {

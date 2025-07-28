@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/onboarding/data/repositories/onboarding_repository.dart';
+import 'package:neginteb/features/onboarding/data/repositories/onboarding_repository.dart';
 
 class OnboardingProvider extends ChangeNotifier {
   final OnboardingRepository repository;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/core/utils/network.dart';
-import 'package:hotelino/core/utils/price_formatter.dart';
-import 'package:hotelino/features/home/data/models/hotel.dart';
+import 'package:neginteb/core/utils/network.dart';
+import 'package:neginteb/core/utils/price_formatter.dart';
+import 'package:neginteb/features/home/data/models/hotel.dart';
 
 class FavoriteHotelCard extends StatelessWidget {
   final Hotel hotel;

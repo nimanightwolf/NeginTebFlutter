@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
-import 'package:hotelino/features/home/presentation/provider/profile_provider.dart';
-import 'package:hotelino/features/profile/presentation/widgets/profile_option_item.dart';
+import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
+import 'package:neginteb/features/profile/presentation/widgets/profile_option_item.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

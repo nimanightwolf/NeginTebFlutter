@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/home/data/models/hotel.dart';
-import 'package:hotelino/features/home/data/models/profile.dart';
-import 'package:hotelino/features/home/data/repositories/hotel_repository.dart';
-import 'package:hotelino/features/home/data/repositories/profile_repository.dart';
+import 'package:neginteb/features/home/data/models/hotel.dart';
+import 'package:neginteb/features/home/data/models/profile.dart';
+import 'package:neginteb/features/home/data/repositories/hotel_repository.dart';
+import 'package:neginteb/features/home/data/repositories/profile_repository.dart';
 
 class ProfileProvider extends ChangeNotifier {
   final ProfileRepository _profileRepository;

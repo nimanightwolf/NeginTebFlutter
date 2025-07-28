@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:hotelino/core/utils/network.dart';
-import 'package:hotelino/features/home/data/models/hotel.dart';
-import 'package:hotelino/features/home/data/repositories/hotel_repository.dart';
-import 'package:hotelino/features/hotel_detail/presentation/full_screen_image_shower.dart';
-import 'package:hotelino/features/hotel_detail/presentation/full_screen_map_page.dart';
-import 'package:hotelino/shared/services/json_data_service.dart';
+import 'package:neginteb/core/utils/network.dart';
+import 'package:neginteb/features/home/data/models/hotel.dart';
+import 'package:neginteb/features/home/data/repositories/hotel_repository.dart';
+import 'package:neginteb/features/hotel_detail/presentation/full_screen_image_shower.dart';
+import 'package:neginteb/features/hotel_detail/presentation/full_screen_map_page.dart';
+import 'package:neginteb/shared/services/json_data_service.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
@@ -276,7 +276,7 @@ class HotelDetailPage extends StatelessWidget {
                             children: [
                               TileLayer(
                                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                userAgentPackageName: 'ir.dunijet.hotelino',
+                                userAgentPackageName: 'ir.dunijet.neginteb',
                               ),
                               MarkerLayer(
                                 markers: [

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/core/constants/constants.dart';
-import 'package:hotelino/features/home/data/models/homepage_data.dart';
-import 'package:hotelino/features/home/data/models/hotel.dart';
-import 'package:hotelino/features/home/data/repositories/hotel_repository.dart';
+import 'package:neginteb/core/constants/constants.dart';
+import 'package:neginteb/features/home/data/models/homepage_data.dart';
+import 'package:neginteb/features/home/data/models/hotel.dart';
+import 'package:neginteb/features/home/data/repositories/hotel_repository.dart';
 
 class HomeProvider extends ChangeNotifier {
   final HotelRepository _hotelRepository;
@@ -43,7 +43,7 @@ class HomeProvider extends ChangeNotifier {
     return shuffledHotels.take(3).map((hotel) => hotel.images[0]).toList();
   }
 
-  final List<String> _storyTitles = ["امکانات رفاهی کامل", "اقامت در قلب شهر", "لوکس ترین هتل ها"];
+  final List<String> _storyTitles = ["تضمین اصالت و خلوص محصولات", "پوشش کامل نیازهای دارویی و آزمایشگاهی", "محصولات تأییدشده و خالص"];
 
   List<String> get storyTitles => _storyTitles;
 }

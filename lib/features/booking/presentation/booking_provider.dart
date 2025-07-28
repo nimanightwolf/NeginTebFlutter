@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/booking/data/models/booking_model.dart';
+import 'package:neginteb/features/booking/data/models/booking_model.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 class BookingProvider with ChangeNotifier {

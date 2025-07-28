@@ -1,19 +1,19 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:hotelino/bootstrap.dart';
-import 'package:hotelino/core/theme/app_theme.dart';
-import 'package:hotelino/core/theme/theme_provider.dart';
-import 'package:hotelino/features/booking/presentation/booking_provider.dart';
-import 'package:hotelino/features/home/data/repositories/hotel_repository.dart';
-import 'package:hotelino/features/home/data/repositories/profile_repository.dart';
-import 'package:hotelino/features/home/presentation/provider/favorite_item_provider.dart';
-import 'package:hotelino/features/home/presentation/provider/home_provider.dart';
-import 'package:hotelino/features/home/presentation/provider/profile_provider.dart';
-import 'package:hotelino/features/onboarding/data/repositories/onboarding_repository.dart';
-import 'package:hotelino/features/onboarding/presentation/onboarding_provider.dart';
-import 'package:hotelino/routes/app_route.dart';
-import 'package:hotelino/shared/services/json_data_service.dart';
+import 'package:neginteb/bootstrap.dart';
+import 'package:neginteb/core/theme/app_theme.dart';
+import 'package:neginteb/core/theme/theme_provider.dart';
+import 'package:neginteb/features/booking/presentation/booking_provider.dart';
+import 'package:neginteb/features/home/data/repositories/hotel_repository.dart';
+import 'package:neginteb/features/home/data/repositories/profile_repository.dart';
+import 'package:neginteb/features/home/presentation/provider/favorite_item_provider.dart';
+import 'package:neginteb/features/home/presentation/provider/home_provider.dart';
+import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
+import 'package:neginteb/features/onboarding/data/repositories/onboarding_repository.dart';
+import 'package:neginteb/features/onboarding/presentation/onboarding_provider.dart';
+import 'package:neginteb/routes/app_route.dart';
+import 'package:neginteb/shared/services/json_data_service.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return Consumer<ThemeProvider>(
       builder: (context, themeModeProvider, child) {
         return MaterialApp(
-          title: 'Hotelino',
+          title: 'NeginTeb',
           locale: const Locale("fa", "IR"),
           supportedLocales: const [Locale("fa", "IR"), Locale("en", "US")],
           localizationsDelegates: const [

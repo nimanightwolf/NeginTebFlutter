@@ -1,5 +1,5 @@
-import 'package:hotelino/features/home/data/models/hotel.dart';
-import 'package:hotelino/shared/services/json_data_service.dart';
+import 'package:neginteb/features/home/data/models/hotel.dart';
+import 'package:neginteb/shared/services/json_data_service.dart';
 
 // dependency
 

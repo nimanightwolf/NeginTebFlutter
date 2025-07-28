@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:hotelino/core/theme/theme_provider.dart';
-import 'package:hotelino/features/home/presentation/provider/profile_provider.dart';
+import 'package:neginteb/core/theme/theme_provider.dart';
+import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {

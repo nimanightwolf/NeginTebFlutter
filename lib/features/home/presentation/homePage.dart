@@ -1,13 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/home/presentation/provider/home_provider.dart';
-import 'package:hotelino/features/home/presentation/widgets/ad_banner.dart';
-import 'package:hotelino/features/home/presentation/widgets/home_appbar.dart';
-import 'package:hotelino/features/home/presentation/widgets/hotel_list_section.dart';
-import 'package:hotelino/features/home/presentation/widgets/hotel_vertical_list.dart';
-import 'package:hotelino/features/home/presentation/widgets/search_bar.dart';
-import 'package:hotelino/features/home/presentation/widgets/story_carousel.dart';
+import 'package:neginteb/features/home/presentation/provider/home_provider.dart';
+import 'package:neginteb/features/home/presentation/widgets/ad_banner.dart';
+import 'package:neginteb/features/home/presentation/widgets/home_appbar.dart';
+import 'package:neginteb/features/home/presentation/widgets/hotel_list_section.dart';
+import 'package:neginteb/features/home/presentation/widgets/hotel_vertical_list.dart';
+import 'package:neginteb/features/home/presentation/widgets/search_bar.dart';
+import 'package:neginteb/features/home/presentation/widgets/story_carousel.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -32,7 +32,7 @@ class HomePage extends StatelessWidget {
             Consumer<HomeProvider>(
               builder: (context, homeProvider, child) {
                 return HotelListSection(
-                  title: "محبوب‌ترین هتل‌ها",
+                  title: "محبوب‌ترین محصولات",
                   hotels: homeProvider.getPopularHotels(),
                   onSeeAllPressed: () {},
                 );
@@ -55,7 +55,7 @@ class HomePage extends StatelessWidget {
             ),
             Consumer<HomeProvider>(
               builder: (context, homeProvider, child) {
-                return HotelVerticalList(title: "جدیدترین هتل‌ها", hotels: homeProvider.getNewestHotels());
+                return HotelVerticalList(title: "جدیدترین محصولات", hotels: homeProvider.getNewestHotels());
               },
             ),
           ],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/onboarding/presentation/onboarding_provider.dart';
-import 'package:hotelino/features/onboarding/presentation/widgets/onboarding_button.dart';
-import 'package:hotelino/features/onboarding/presentation/widgets/onboarding_item.dart';
-import 'package:hotelino/routes/app_route.dart';
+import 'package:neginteb/features/onboarding/presentation/onboarding_provider.dart';
+import 'package:neginteb/features/onboarding/presentation/widgets/onboarding_button.dart';
+import 'package:neginteb/features/onboarding/presentation/widgets/onboarding_item.dart';
+import 'package:neginteb/routes/app_route.dart';
 import 'package:provider/provider.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -88,7 +88,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               onPressed: () {
                                 Navigator.pushReplacementNamed(context, AppRoute.home);
                               },
-                              child: const Text('شروع رزرو هتل ها')),
+                              child: const Text('ورود به فروشگاه')),
                         ),
                       )
                     : null)

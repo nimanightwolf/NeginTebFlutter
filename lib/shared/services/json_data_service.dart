@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:hotelino/core/constants/constants.dart';
-import 'package:hotelino/features/home/data/models/hotel.dart';
+import 'package:neginteb/core/constants/constants.dart';
+import 'package:neginteb/features/home/data/models/hotel.dart';
 
 class JsonDataService {
   Future<List<Hotel>> loadHotels() async {

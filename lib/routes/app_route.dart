@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/home/presentation/homePage.dart';
-import 'package:hotelino/features/onboarding/presentation/onboarding_page.dart';
-import 'package:hotelino/routes/main_bottom_nav.dart';
+import 'package:neginteb/features/home/presentation/homePage.dart';
+import 'package:neginteb/features/onboarding/presentation/onboarding_page.dart';
+import 'package:neginteb/routes/main_bottom_nav.dart';
 
 class AppRoute {
   static const String home = '/';

@@ -23,7 +23,7 @@ class FullScreenMapPage extends StatelessWidget {
           children: [
             TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'ir.dunijet.hotelino',
+              userAgentPackageName: 'ir.dunijet.neginteb',
             ),
             MarkerLayer(
               markers: [

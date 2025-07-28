@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/home/data/models/hotel.dart';
-import 'package:hotelino/features/home/data/repositories/hotel_repository.dart';
+import 'package:neginteb/features/home/data/models/hotel.dart';
+import 'package:neginteb/features/home/data/repositories/hotel_repository.dart';
 
 class FavotireItemProvider extends ChangeNotifier {
   final HotelRepository _hotelRepository;

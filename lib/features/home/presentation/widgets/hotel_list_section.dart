@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/home/data/models/hotel.dart';
-import 'package:hotelino/features/home/presentation/widgets/hotel_card.dart';
+import 'package:neginteb/features/home/data/models/hotel.dart';
+import 'package:neginteb/features/home/presentation/widgets/hotel_card.dart';
 
 class HotelListSection extends StatelessWidget {
   final String title;

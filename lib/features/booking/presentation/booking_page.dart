@@ -1,11 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:hotelino/features/booking/presentation/booking_provider.dart';
-import 'package:hotelino/features/booking/presentation/widgets/booking_form_field.dart';
-import 'package:hotelino/features/booking/presentation/widgets/date_picker_field.dart';
-import 'package:hotelino/features/booking/presentation/widgets/number_text_field.dart';
-import 'package:hotelino/features/booking/presentation/widgets/terms_widget.dart';
+import 'package:neginteb/features/booking/presentation/booking_provider.dart';
+import 'package:neginteb/features/booking/presentation/widgets/booking_form_field.dart';
+import 'package:neginteb/features/booking/presentation/widgets/date_picker_field.dart';
+import 'package:neginteb/features/booking/presentation/widgets/number_text_field.dart';
+import 'package:neginteb/features/booking/presentation/widgets/terms_widget.dart';
 import 'package:provider/provider.dart';
 
 class BookingPage extends StatefulWidget {

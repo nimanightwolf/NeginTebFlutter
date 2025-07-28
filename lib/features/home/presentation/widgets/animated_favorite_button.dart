@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/shared/widgets/glassmorphism.dart';
+import 'package:neginteb/shared/widgets/glassmorphism.dart';
 
 class AnimatedFavoriteButton extends StatefulWidget {
   final bool isFavorite;

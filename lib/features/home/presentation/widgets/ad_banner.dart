@@ -20,7 +20,7 @@ class AdBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  'زندگی در هتل های لاکچری',
+                  'دسترسی در سریع ترین زمان ممکن',
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
@@ -33,7 +33,7 @@ class AdBanner extends StatelessWidget {
                 Text(
                   textDirection: TextDirection.rtl,
                   textAlign: TextAlign.right,
-                  'با ما زندگی کردن در لاکچری ترین هتل های جهان را با حداقل بودجه تجربه کنید.',
+                  'تأمین تخصصی مواد دارویی و آزمایشگاهی با نگین‌طب.',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white70),
                 ),
                 SizedBox(
@@ -45,7 +45,7 @@ class AdBanner extends StatelessWidget {
                         backgroundColor: Colors.white,
                         foregroundColor: Colors.brown.shade800,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-                    child: Text("همه هتل ها")),
+                    child: Text("همه محصولات")),
                 SizedBox(
                   height: 8,
                 )

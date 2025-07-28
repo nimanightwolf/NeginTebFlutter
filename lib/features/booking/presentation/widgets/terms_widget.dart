@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hotelino/core/constants/constants.dart';
-import 'package:hotelino/core/utils/keyboard.dart';
+import 'package:neginteb/core/constants/constants.dart';
+import 'package:neginteb/core/utils/keyboard.dart';
 
 class TermsWidget extends StatefulWidget {
   static final GlobalKey<_TermsWidgetState> termsKey = GlobalKey<_TermsWidgetState>();

@@ -1,4 +1,4 @@
-name: hotelino
+name: neginteb
 description: "A simple hotel booking app using Provider state management"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -71,7 +71,7 @@ flutter_launcher_icons:
   web:
     generate: true
     image_path: "assets/icon/icon.png"
-    background_color: "#B27258"
+    background_color: "#63a002"
   windows:
     generate: true
     image_path: "assets/icon/icon.png"
@@ -81,14 +81,14 @@ flutter_launcher_icons:
     image_path: "assets/icon/icon.png"
 
 flutter_native_splash:
-  image: assets/icon/splash.png
-  color: "#B27258"
+  image: assets/icon/icon.png
+  color: "#FFFFFF"
   android_gravity: center
   fullscreen: true
 
   android_12:
     image: assets/icon/splash.png
-    color: "#B27258"
+    color: "#63a002"
 
 
 # The following section is specific to Flutter packages.
