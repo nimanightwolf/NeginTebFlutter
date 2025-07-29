@@ -48,7 +48,7 @@ class HotelCardVertical extends StatelessWidget {
               padding: const EdgeInsets.only(left: 12, bottom: 12),
               child: ElevatedButton(
                 onPressed: () {},
-                child: const Text("رزرو اتاق", style: TextStyle(color: Colors.white)),
+                child: const Text("خرید", style: TextStyle(color: Colors.white)),
               ),
             ),
             Expanded(

@@ -14,7 +14,7 @@ class FavoritePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'هتل های مورد علاقه',
+          'لیست خرید',
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         centerTitle: true,

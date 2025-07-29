@@ -46,7 +46,7 @@ class HotelCard extends StatelessWidget {
                       networkUrl(hotel.images[0]),
                       height: 200,
                       width: double.infinity,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                   ),
                   Positioned(
@@ -127,7 +127,7 @@ class HotelCard extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(right: 8),
                     child: Text(
-                      "از ${formatPrice(hotel.pricePerNight)} / شب",
+                      "از ${formatPrice(hotel.pricePerNight)} تومن",
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -141,7 +141,7 @@ class HotelCard extends StatelessWidget {
                       child: ElevatedButton(
                           onPressed: () {},
                           child: Text(
-                            "مشاهده و انتخاب اتاق",
+                            "مشاهده و خرید",
                             style: TextStyle(color: Colors.white),
                           )),
                     ),

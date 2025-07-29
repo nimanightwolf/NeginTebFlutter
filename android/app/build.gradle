@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.dadehpardazan.neginteb"
+    namespace = "ir.dunijet.hotelino"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "28.0.12674087"
 

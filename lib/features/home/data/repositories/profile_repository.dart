@@ -8,7 +8,7 @@ class ProfileRepository {
       id: "7954862145",
       name: "نیما حیدری",
       email: "kiankhaki@gmail.com",
-      avatarUrl: "https://dunijet.ir/content/projects/neginteb/profile_pic.png",
+      avatarUrl: "https://dunijet.ir/content/projects/hotelino/profile_pic.png",
       phoneNumber: "+989123456789",
       location: "تهران، ایران",
       bio: "عاشق سفر و تجربه هتل‌های لاکچری 🌍✨",
