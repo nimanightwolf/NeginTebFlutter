@@ -20,7 +20,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'features/login/presentation/provider/auth_provider.dart';
-import 'features/login/repositories/auth_repository.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -97,7 +96,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               ? AppTheme.lightTheme
               : AppTheme.darkTheme,
           routes: AppRoute.routes,
-          initialRoute: AppRoute.login,
+          initialRoute: AppRoute.splash,
         );
       },
     );

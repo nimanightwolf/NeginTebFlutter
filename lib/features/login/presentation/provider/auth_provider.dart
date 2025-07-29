@@ -1,8 +1,10 @@
+
+
 import 'package:flutter/material.dart';
-import 'package:neginteb/features/login/presentation/provider/storage_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../routes/app_route.dart';
 import '../../../../shared/services/api/api_service.dart';
-
 
 class LoginProvider extends ChangeNotifier {
   final mobileController = TextEditingController();
@@ -21,24 +23,31 @@ class LoginProvider extends ChangeNotifier {
     }
   }
 
-  void verifyCode() async {
+  void verifyCode(BuildContext context) async {
     final response = await ApiService.post(
       'apply_activation_key',
       data: {
         'mobile': mobileController.text,
         'activation_key': codeController.text,
-        'push_id': 'push_123',
-        'android_id': 'android_123',
-        'device_name': 'Samsung Galaxy',
-        'device_model': 'SM-G950F',
-        'android_version': '11',
+        'push_id': '',
+        'android_id': '',
+        'device_name': '',
+        'device_model': '',
+        'android_version': '',
       },
     );
+
+    print(response.toString());
     if (response['success'] == true) {
-      await StorageHelper.saveToken(response['token']);
-      await StorageHelper.saveUserId(response['user_id']);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', response['token']);
+      await prefs.setString('user_id', response['user_id']);
+
+      final token = prefs.getString('token');
+      print(token);
+      Navigator.pushReplacementNamed(context, AppRoute.home);
       // رفتن به صفحه خانه
-     // navigatorKey.currentState?.pushReplacementNamed(AppRoute.home);
+      // navigatorKey.currentState?.pushReplacementNamed(AppRoute.home);
     }
   }
 }

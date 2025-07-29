@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 class ApiService {
@@ -11,7 +13,9 @@ class ApiService {
   static Future<Map<String, dynamic>> post(String endpoint, {Map<String, dynamic>? data}) async {
     try {
       final response = await _dio.post(endpoint, data: data);
-      return response.data;
+      print(response);
+      final decoded = jsonDecode(response.data);
+      return decoded;
     } catch (e) {
       print('Request error: $e');
       return {};
