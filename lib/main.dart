@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:neginteb/bootstrap.dart';
 import 'package:neginteb/core/theme/app_theme.dart';
@@ -18,6 +19,9 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
+import 'features/login/presentation/provider/auth_provider.dart';
+import 'features/login/repositories/auth_repository.dart';
+
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
@@ -30,12 +34,17 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(
-          create: (_) => ThemeProvider(WidgetsBinding.instance.platformDispatcher.platformBrightness)),
-      ChangeNotifierProvider(create: (_) => OnboardingProvider(OnboardingRepository())),
+          create: (_) => ThemeProvider(
+              WidgetsBinding.instance.platformDispatcher.platformBrightness)),
+      ChangeNotifierProvider(
+          create: (_) => OnboardingProvider(OnboardingRepository())),
       ChangeNotifierProvider(create: (_) => BookingProvider()),
       ChangeNotifierProvider(create: (_) => HomeProvider(hotelRepository)),
-      ChangeNotifierProvider(create: (_) => ProfileProvider(ProfileRepository(), hotelRepository)),
-      ChangeNotifierProvider(create: (_) => FavotireItemProvider(hotelRepository)),
+      ChangeNotifierProvider(
+          create: (_) => ProfileProvider(ProfileRepository(), hotelRepository)),
+      ChangeNotifierProvider(
+          create: (_) => FavotireItemProvider(hotelRepository)),
+      ChangeNotifierProvider(create: (_) => AuthProvider())
     ],
     child: const MyApp(),
   ));
@@ -65,8 +74,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangePlatformBrightness() {
     super.didChangePlatformBrightness();
 
-    final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
-    Provider.of<ThemeProvider>(context, listen: false).updateBrightness(brightness);
+    final brightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    Provider.of<ThemeProvider>(context, listen: false)
+        .updateBrightness(brightness);
   }
 
   @override
@@ -82,9 +93,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             PersianCupertinoLocalizations.delegate
           ],
           debugShowCheckedModeBanner: false,
-          theme: themeModeProvider.brightness == Brightness.light ? AppTheme.lightTheme : AppTheme.darkTheme,
+          theme: themeModeProvider.brightness == Brightness.light
+              ? AppTheme.lightTheme
+              : AppTheme.darkTheme,
           routes: AppRoute.routes,
-          initialRoute: AppRoute.onboarding,
+          initialRoute: AppRoute.login,
         );
       },
     );
