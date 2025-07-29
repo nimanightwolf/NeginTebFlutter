@@ -16,6 +16,6 @@ class AppRoute {
   static final Map<String, WidgetBuilder> routes = {
     onboarding: (ctx) => const OnboardingPage(),
     home: (ctx) => const MainButtomNav(),
-    login:(ctx)=>  LoginPage()
+    login:(ctx)=> const LoginPage()
   };
 }

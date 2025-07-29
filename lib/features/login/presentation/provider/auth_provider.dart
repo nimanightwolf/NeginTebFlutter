@@ -1,57 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:neginteb/features/login/presentation/provider/storage_helper.dart';
 
-import 'auth_service.dart';
+import '../../../../shared/services/api/api_service.dart';
 
 
-class AuthProvider with ChangeNotifier {
-  final AuthService _authService = AuthService();
-  final TextEditingController codeController = TextEditingController();
+class LoginProvider extends ChangeNotifier {
+  final mobileController = TextEditingController();
+  final codeController = TextEditingController();
+  bool isCodeSent = false;
 
-  bool codeSent = false;
-  String? mobile;
-  String? error;
-
-  void sendSmsCode(String phone, BuildContext context) async {
-    try {
-      error = null;
-      await _authService.sendSms(phone);
-      mobile = phone;
-      codeSent = true;
-      notifyListeners();
-    } catch (e) {
-      error = 'خطا در ارسال کد';
+  void sendMobile() async {
+    final mobile = mobileController.text;
+    final response = await ApiService.post(
+      'mobile_sms',
+      data: {'mobile': mobile},
+    );
+    if (response['status'] == 'ok') {
+      isCodeSent = true;
       notifyListeners();
     }
   }
 
-  void verifyCode(BuildContext context) async {
-    try {
-      error = null;
-      final result = await _authService.verify(
-        mobile: mobile!,
-        code: codeController.text,
-        pushId: 'push_123',
-        androidId: 'android_123',
-        deviceName: 'Samsung Galaxy',
-        deviceModel: 'SM-G950F',
-        androidVersion: '11',
-      );
-
-      if (result['success']) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', result['token']);
-        await prefs.setString('user_id', result['user_id']);
-        // Navigator.pushReplacementNamed(context, AppRoute.home);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result['message'])),
-        );
-      } else {
-        error = 'کد نادرست است';
-      }
-    } catch (e) {
-      error = 'خطا در تأیید کد';
+  void verifyCode() async {
+    final response = await ApiService.post(
+      'apply_activation_key',
+      data: {
+        'mobile': mobileController.text,
+        'activation_key': codeController.text,
+        'push_id': 'push_123',
+        'android_id': 'android_123',
+        'device_name': 'Samsung Galaxy',
+        'device_model': 'SM-G950F',
+        'android_version': '11',
+      },
+    );
+    if (response['success'] == true) {
+      await StorageHelper.saveToken(response['token']);
+      await StorageHelper.saveUserId(response['user_id']);
+      // رفتن به صفحه خانه
+     // navigatorKey.currentState?.pushReplacementNamed(AppRoute.home);
     }
-    notifyListeners();
   }
 }

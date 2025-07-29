@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:dio/dio.dart';
+
 import 'package:flutter/material.dart';
 import 'package:neginteb/bootstrap.dart';
 import 'package:neginteb/core/theme/app_theme.dart';
@@ -44,7 +44,7 @@ void main() async {
           create: (_) => ProfileProvider(ProfileRepository(), hotelRepository)),
       ChangeNotifierProvider(
           create: (_) => FavotireItemProvider(hotelRepository)),
-      ChangeNotifierProvider(create: (_) => AuthProvider())
+      ChangeNotifierProvider(create: (_) => LoginProvider())
     ],
     child: const MyApp(),
   ));
