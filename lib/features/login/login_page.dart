@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:neginteb/features/login/presentation/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -36,11 +35,14 @@ class LoginScreenContent extends StatelessWidget {
                     controller: provider.mobileController,
                     keyboardType: TextInputType.phone,
                     textAlign: TextAlign.right,
-                    decoration: const InputDecoration(labelText: 'شماره موبایل'),
+                    decoration:
+                        const InputDecoration(labelText: 'شماره موبایل'),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: provider.sendMobile,
+                    onPressed: () {
+                      provider.sendMobile(context);
+                    },
                     child: const Text('ارسال کد تأیید'),
                   ),
                 ] else ...[
@@ -48,14 +50,16 @@ class LoginScreenContent extends StatelessWidget {
                     controller: provider.codeController,
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.right,
-                    decoration: const InputDecoration(labelText: 'کد فعال‌سازی'),
+                    decoration:
+                        const InputDecoration(labelText: 'کد فعال‌سازی'),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-
-                    onPressed: (){
-                      final loginProvider = Provider.of<LoginProvider>(context, listen: false);
-                      loginProvider.verifyCode(context); // حواست باشه context بدی
+                    onPressed: () {
+                      final loginProvider =
+                          Provider.of<LoginProvider>(context, listen: false);
+                      loginProvider
+                          .verifyCode(context); // حواست باشه context بدی
                     },
                     child: const Text('تأیید و ورود'),
                   ),

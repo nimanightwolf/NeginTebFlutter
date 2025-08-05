@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:neginteb/bootstrap.dart';
 import 'package:neginteb/core/theme/app_theme.dart';
@@ -19,9 +20,26 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
+
 import 'features/login/presentation/provider/auth_provider.dart';
 
 void main() async {
+  //final appDatabase = AppDatabase();
+  final dio = Dio();
+  //final database = AppDatabase(NativeDatabase.memory());  // برای پایگاه داده در حافظه یا فایل
+
+  // اضافه کردن داده به دیتابیس
+  // await database.into(database.products).insert(ProductsCompanion(
+  //   title: Value('Product A'),
+  //   description: Value('This is a product'),
+  //   price: Value(100.0),
+  // ));
+
+  // دریافت داده‌ها از دیتابیس
+  // final allProducts = await database.select(database.products).get();
+  // print(allProducts);
+ // final productRepository = ProductRepository(dio: dio, database: appDatabase);
+
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -43,7 +61,11 @@ void main() async {
           create: (_) => ProfileProvider(ProfileRepository(), hotelRepository)),
       ChangeNotifierProvider(
           create: (_) => FavotireItemProvider(hotelRepository)),
-      ChangeNotifierProvider(create: (_) => LoginProvider())
+      ChangeNotifierProvider(create: (_) => LoginProvider()),
+      // ChangeNotifierProvider(
+      //   create: (_) => ProductProvider(productRepository: productRepository),
+      // ),
+
     ],
     child: const MyApp(),
   ));

@@ -1,7 +1,10 @@
 // splash_page.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:neginteb/routes/app_route.dart';
+
+import '../home/presentation/provider/product_provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -15,6 +18,8 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     _checkLoginStatus();
+    final productProvider = Provider.of<ProductProvider>(context, listen: false);
+    productProvider.fetchProducts();
   }
 
   Future<void> _checkLoginStatus() async {

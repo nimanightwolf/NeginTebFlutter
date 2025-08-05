@@ -1,17 +1,21 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../routes/app_route.dart';
 import '../../../../shared/services/api/api_service.dart';
+import '../../../home/presentation/provider/product_provider.dart';
 
 class LoginProvider extends ChangeNotifier {
   final mobileController = TextEditingController();
   final codeController = TextEditingController();
   bool isCodeSent = false;
 
-  void sendMobile() async {
+  void sendMobile(BuildContext context) async {
+
+
     final mobile = mobileController.text;
     final response = await ApiService.post(
       'mobile_sms',
@@ -21,6 +25,7 @@ class LoginProvider extends ChangeNotifier {
       isCodeSent = true;
       notifyListeners();
     }
+
   }
 
   void verifyCode(BuildContext context) async {
