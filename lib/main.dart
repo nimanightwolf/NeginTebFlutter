@@ -3,6 +3,8 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:neginteb/bootstrap.dart';
 import 'package:neginteb/core/theme/app_theme.dart';
 import 'package:neginteb/core/theme/theme_provider.dart';
@@ -21,10 +23,20 @@ import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 
+import 'data/models/product.dart';
+import 'features/home/presentation/provider/product_provider.dart';
 import 'features/login/presentation/provider/auth_provider.dart';
 
 void main() async {
   //final appDatabase = AppDatabase();
+  // راه‌اندازی Hive
+  await Hive.initFlutter();
+  // ثبت آداپتر برای مدل‌ها (برای Hive)
+  Hive.registerAdapter(ProductAdapter());
+  // باز کردن دیتابیس Hive
+  final productProvider = ProductProvider();
+  await productProvider.openDatabase();
+
   final dio = Dio();
   //final database = AppDatabase(NativeDatabase.memory());  // برای پایگاه داده در حافظه یا فایل
 
@@ -62,6 +74,7 @@ void main() async {
       ChangeNotifierProvider(
           create: (_) => FavotireItemProvider(hotelRepository)),
       ChangeNotifierProvider(create: (_) => LoginProvider()),
+      ChangeNotifierProvider(create: (_) => productProvider),  // اضافه کردن ProductProvider
       // ChangeNotifierProvider(
       //   create: (_) => ProductProvider(productRepository: productRepository),
       // ),

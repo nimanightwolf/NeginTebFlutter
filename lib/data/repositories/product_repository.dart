@@ -1,9 +1,7 @@
 import 'package:dio/dio.dart';
 
 
-import 'package:neginteb/data/models/product_mapper.dart';
 
-import '../models/product.dart';
 
 class ProductRepository {
   final Dio dio;
@@ -29,7 +27,7 @@ class ProductRepository {
         List productsJson = response.data;
 
         for (var json in productsJson) {
-          final product = Product.fromJson(json);
+          //final product = Product.fromJson(json);
         //  final companion = product.toCompanion();
         //   await database.insertOrUpdateProduct(companion);
         }

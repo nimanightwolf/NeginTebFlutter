@@ -1,49 +1,143 @@
+import 'package:hive/hive.dart';
+
+part 'product.g.dart';  // برای تولید کدهای Hive
+
+@HiveType(typeId: 0)  // تعیین ID منحصر به‌فرد برای مدل
 class Product {
-  final String id;
-  final String? userId;
-  final String title;
-  final String nameHolo;
-  final String nameLatin;
-  final String country;
-  final String dateEx;
-  final String datePd;
-  final String price;
-  final String priceType;
-  final String description;
-  final String keyWord;
-  final String furmol;
-  final String category;
-  final String date;
-  final String status;
-  final String image1;
-  final String image2;
-  final String image3;
-  final String isShowImage4;
-  final String stiker;
-  final String packing;
-  final int priceVazn;
-  final String priceH;
-  final String priceVaznH;
-  final String unit;
-  final String mojodiAll;
-  final String wast;
-  final String linkPdf;
-  final String priceShopUs;
-  final String? sort;
-  final String categoryTitle;
-  final String relate;
-  final String offer;
-  final String linkVideo;
-  final String naghdi;
-  final String delet;
-  final String offerTwo;
-  final String idHolo;
-  final String artNo;
-  final String fourmulOne;
-  final String fourmulTwo;
-  final String minNumber;
-  final String maxNumber;
-  final String darsadVisitor;
+  @HiveField(0)
+  final String id; // شناسه محصول
+
+  @HiveField(1)
+  final String? userId; // شناسه کاربر
+
+  @HiveField(2)
+  final String title; // عنوان محصول
+
+  @HiveField(3)
+  final String nameHolo; // نام هولوگرافی
+
+  @HiveField(4)
+  final String nameLatin; // نام لاتین
+
+  @HiveField(5)
+  final String country; // کشور سازنده
+
+  @HiveField(6)
+  final String dateEx; // تاریخ انقضا
+
+  @HiveField(7)
+  final String datePd; // تاریخ تولید
+
+  @HiveField(8)
+  final String price; // قیمت
+
+  @HiveField(9)
+  final String priceType; // نوع قیمت
+
+  @HiveField(10)
+  final String description; // توضیحات
+
+  @HiveField(11)
+  final String keyWord; // کلمات کلیدی
+
+  @HiveField(12)
+  final String furmol; // فرمول
+
+  @HiveField(13)
+  final String category; // دسته‌بندی
+
+  @HiveField(14)
+  final String date; // تاریخ
+
+  @HiveField(15)
+  final String status; // وضعیت
+
+  @HiveField(16)
+  final String image1; // تصویر اول
+
+  @HiveField(17)
+  final String image2; // تصویر دوم
+
+  @HiveField(18)
+  final String image3; // تصویر سوم
+
+  @HiveField(19)
+  final String isShowImage4; // نمایش تصویر چهارم
+
+  @HiveField(20)
+  final String stiker; // استیکر
+
+  @HiveField(21)
+  final String packing; // بسته‌بندی
+
+  @HiveField(22)
+  final int priceVazn; // قیمت بر اساس وزن
+
+  @HiveField(23)
+  final String priceH; // قیمت
+
+  @HiveField(24)
+  final String priceVaznH; // قیمت وزن
+
+  @HiveField(25)
+  final String unit; // واحد
+
+  @HiveField(26)
+  final String mojodiAll; // موجودی کل
+
+  @HiveField(27)
+  final String wast; // ضایعات
+
+  @HiveField(28)
+  final String linkPdf; // لینک فایل PDF
+
+  @HiveField(29)
+  final String priceShopUs; // قیمت فروشگاه
+
+  @HiveField(30)
+  final String? sort; // مرتب‌سازی
+
+  @HiveField(31)
+  final String categoryTitle; // عنوان دسته‌بندی
+
+  @HiveField(32)
+  final String relate; // محصول مرتبط
+
+  @HiveField(33)
+  final String offer; // پیشنهاد
+
+  @HiveField(34)
+  final String linkVideo; // لینک ویدیو
+
+  @HiveField(35)
+  final String naghdi; // نقدی
+
+  @HiveField(36)
+  final String delet; // حذف
+
+  @HiveField(37)
+  final String offerTwo; // پیشنهاد دوم
+
+  @HiveField(38)
+  final String idHolo; // شناسه هولوگرافی
+
+  @HiveField(39)
+  final String artNo; // شماره قطعه
+
+  @HiveField(40)
+  final String fourmulOne; // فرمول اول
+
+  @HiveField(41)
+  final String fourmulTwo; // فرمول دوم
+
+  @HiveField(42)
+  final String minNumber; // حداقل تعداد
+
+  @HiveField(43)
+  final String maxNumber; // حداکثر تعداد
+
+  @HiveField(44)
+  final String darsadVisitor; // درصد بازدید
 
   Product({
     required this.id,
@@ -92,100 +186,4 @@ class Product {
     required this.maxNumber,
     required this.darsadVisitor,
   });
-
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
-    id: json["id"],
-    userId: json["user_id"],
-    title: json["title"],
-    nameHolo: json["name_holo"],
-    nameLatin: json["name_latin"],
-    country: json["country"],
-    dateEx: json["date_ex"],
-    datePd: json["date_pd"],
-    price: json["price"],
-    priceType: json["price_type"],
-    description: json["description"],
-    keyWord: json["key_word"],
-    furmol: json["furmol"],
-    category: json["category"],
-    date: json["date"],
-    status: json["status"],
-    image1: json["image1"],
-    image2: json["image2"],
-    image3: json["image3"],
-    isShowImage4: json["is_show_image4"],
-    stiker: json["stiker"],
-    packing: json["packing"],
-    priceVazn: json["pricevazn"] ?? 0,
-    priceH: json["priceh"],
-    priceVaznH: json["pricevaznh"],
-    unit: json["unit"],
-    mojodiAll: json["mojodi_all"],
-    wast: json["wast"],
-    linkPdf: json["link_pdf"],
-    priceShopUs: json["price_shop_us"],
-    sort: json["sort"],
-    categoryTitle: json["category_title"],
-    relate: json["relate"],
-    offer: json["offer"],
-    linkVideo: json["link_video"],
-    naghdi: json["naghdi"],
-    delet: json["delet"],
-    offerTwo: json["offer_two"],
-    idHolo: json["id_holo"],
-    artNo: json["art_no"],
-    fourmulOne: json["fourmul_one"],
-    fourmulTwo: json["fourmul_two"],
-    minNumber: json["min_number"],
-    maxNumber: json["max_number"],
-    darsadVisitor: json["darsad_visitor"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "user_id": userId,
-    "title": title,
-    "name_holo": nameHolo,
-    "name_latin": nameLatin,
-    "country": country,
-    "date_ex": dateEx,
-    "date_pd": datePd,
-    "price": price,
-    "price_type": priceType,
-    "description": description,
-    "key_word": keyWord,
-    "furmol": furmol,
-    "category": category,
-    "date": date,
-    "status": status,
-    "image1": image1,
-    "image2": image2,
-    "image3": image3,
-    "is_show_image4": isShowImage4,
-    "stiker": stiker,
-    "packing": packing,
-    "pricevazn": priceVazn,
-    "priceh": priceH,
-    "pricevaznh": priceVaznH,
-    "unit": unit,
-    "mojodi_all": mojodiAll,
-    "wast": wast,
-    "link_pdf": linkPdf,
-    "price_shop_us": priceShopUs,
-    "sort": sort,
-    "category_title": categoryTitle,
-    "relate": relate,
-    "offer": offer,
-    "link_video": linkVideo,
-    "naghdi": naghdi,
-    "delet": delet,
-    "offer_two": offerTwo,
-    "id_holo": idHolo,
-    "art_no": artNo,
-    "fourmul_one": fourmulOne,
-    "fourmul_two": fourmulTwo,
-    "min_number": minNumber,
-    "max_number": maxNumber,
-    "darsad_visitor": darsadVisitor,
-  };
 }
