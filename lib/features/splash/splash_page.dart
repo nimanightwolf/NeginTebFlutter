@@ -39,24 +39,16 @@ class _SplashPageState extends State<SplashPage> {
     final userId = prefs.getString('user_id');
     print(token);
     print(userId);
-    final response = await ApiService.post(
-      'get_ad_list_offline_new',
-        data: {
-          "category_filter": 0,
-          "location_filter": 0,
-          "last_ad_id": "0",
-          "user_id": "1095",
-          "search_key":""
-        }
-    );
 
-    print(response.toString());
-
-    // if (token != null && token.isNotEmpty && userId != null) {
-    //   Navigator.pushReplacementNamed(context, AppRoute.home);
-    // } else {
-    //   Navigator.pushReplacementNamed(context, AppRoute.login);
-    // }
+    if (token != null && token.isNotEmpty && userId != null) {
+      Navigator.pushReplacementNamed(context, AppRoute.home);
+    } else {
+      //Navigator.pushReplacementNamed(context, AppRoute.login);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => ProductListPage()), // هدایت به صفحه Home بعد از بارگذاری داده‌ها
+      );
+    }
   }
 
   @override
