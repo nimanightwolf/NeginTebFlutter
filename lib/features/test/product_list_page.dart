@@ -9,22 +9,26 @@ class ProductListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('محصولات دارویی')),
+      appBar: AppBar(title: Text('داروها')),
       body: Consumer<ProductProvider>(
         builder: (context, productProvider, child) {
-          final products = productProvider.products;
-          return ListView.builder(
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              final product = products[index];
-              return ListTile(
-                title: Text(product.title),
-                subtitle: Text(product.description),
-                trailing: Text('${product.price} تومان'),
-              );
-            },
-          );
-        },
+          // if (productProvider.isLoading) {
+          //   return Center(child: CircularProgressIndicator()); // در حال بارگذاری
+          // } else {
+            final products = productProvider.getProductsFromDatabase();
+            return ListView.builder(
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                final product = products[index];
+                return ListTile(
+                  title: Text(product.title),
+                  subtitle: Text(product.description),
+                  trailing: Text('${product.price}'),
+                );
+              },
+            );
+          }
+        // },
       ),
     );
   }

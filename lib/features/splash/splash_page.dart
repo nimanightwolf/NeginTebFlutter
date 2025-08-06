@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:neginteb/routes/app_route.dart';
 
-import '../../shared/services/api/api_service.dart';
 import '../home/presentation/provider/product_provider.dart';
 
 class SplashPage extends StatefulWidget {
@@ -27,10 +26,10 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> _loadProducts() async {
     await Provider.of<ProductProvider>(context, listen: false).fetchProducts(); // بارگذاری داده‌ها از API
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => ProductListPage()), // هدایت به صفحه Home بعد از بارگذاری داده‌ها
-    );
+    // Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => ProductListPage()), // هدایت به صفحه Home بعد از بارگذاری داده‌ها
+    // );
   }
 
   Future<void> _checkLoginStatus() async {
@@ -43,7 +42,7 @@ class _SplashPageState extends State<SplashPage> {
     if (token != null && token.isNotEmpty && userId != null) {
       Navigator.pushReplacementNamed(context, AppRoute.home);
     } else {
-      //Navigator.pushReplacementNamed(context, AppRoute.login);
+      Navigator.pushReplacementNamed(context, AppRoute.login);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => ProductListPage()), // هدایت به صفحه Home بعد از بارگذاری داده‌ها

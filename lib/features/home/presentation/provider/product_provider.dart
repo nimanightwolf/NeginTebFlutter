@@ -25,7 +25,7 @@ class ProductProvider with ChangeNotifier {
   Future<void> fetchProducts() async {
     print("fetchProducts nima");
     _isLoading = true;
-    notifyListeners();
+
 
     try {
       final response = await ApiService.post(
@@ -98,6 +98,7 @@ class ProductProvider with ChangeNotifier {
         for (var product in _products) {
           await _productBox.put(product.id, product); // ذخیره محصول در Hive
         }
+        notifyListeners();
       } else {
         print("No data received");
       }
