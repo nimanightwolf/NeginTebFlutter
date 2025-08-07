@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:neginteb/features/favorite/presentation/widgets/favorite_item.dart';
 import 'package:neginteb/features/home/presentation/provider/favorite_item_provider.dart';
 import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
-import 'package:neginteb/features/home/presentation/widgets/hotel_list_section.dart';
 import 'package:neginteb/features/home/presentation/widgets/search_bar.dart';
 import 'package:provider/provider.dart';
+
+import '../../home/presentation/widgets/product_list_section.dart';
 
 class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
@@ -48,9 +49,9 @@ class FavoritePage extends StatelessWidget {
             ),
             Consumer<ProfileProvider>(
               builder: (context, profileProvider, child) {
-                if (profileProvider.recentlyViewedHotels.isNotEmpty) {
-                  return HotelListSection(
-                      title: "بازدید های اخیر", hotels: profileProvider.recentlyViewedHotels);
+                if (profileProvider.recentlyViewedProducts.isNotEmpty) {
+                  return ProductListSection(
+                      title: "بازدید های اخیر", product: profileProvider.recentlyViewedProducts);
                 } else {
                   return SizedBox();
                 }

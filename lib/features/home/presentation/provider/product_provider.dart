@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:dio/dio.dart';
 
+
+import '../../../../data/models/banner_data.dart';
+import '../../../../data/models/product_ids.dart';
 import '../../../../data/models/product.dart';
 import '../../../../shared/services/api/api_service.dart';
 
@@ -15,15 +18,75 @@ class ProductProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
 
   late Box<Product> _productBox;
-
+  late Box<ProductIds> _productIdsBox;
+  late Box<BannerData> _bannerDataBox;
   // باز کردن دیتابیس Hive
   Future<void> openDatabase() async {
     _productBox = await Hive.openBox<Product>('products');
+    _productIdsBox = await Hive.openBox<ProductIds>('product_ids');
+    _bannerDataBox = await Hive.openBox<BannerData>('banner_data');
+  }
+  Future<void> savePopularProducts(List<String> productIds) async {
+    final productIdsData = ProductIds(
+      popularProductIds: productIds,
+      specialOfferProductIds: [],
+      newProductIds: [],
+    );
+    await _productIdsBox.put('popular_products', productIdsData);
+  }
+  // ذخیره لیست پیشنهادات ویژه امروز
+  Future<void> saveSpecialOfferProducts(List<String> productIds) async {
+    final productIdsData = ProductIds(
+      popularProductIds: [],
+      specialOfferProductIds: productIds,
+      newProductIds: [],
+    );
+    await _productIdsBox.put('special_offer_products', productIdsData);
+  }
+
+  // ذخیره لیست جدیدترین محصولات
+  Future<void> saveNewProducts(List<String> productIds) async {
+    final productIdsData = ProductIds(
+      popularProductIds: [],
+      specialOfferProductIds: [],
+      newProductIds: productIds,
+    );
+    await _productIdsBox.put('new_products', productIdsData);
+  }
+  // ذخیره بنرها
+  Future<void> saveBanners(List<BannerData> banners) async {
+    await _bannerDataBox.clear();  // پاک‌سازی بنرهای قبلی
+    for (var banner in banners) {
+      await _bannerDataBox.add(banner);  // ذخیره بنر در Hive
+    }
+  }
+
+  // دریافت لیست محصولات محبوب
+  List<String> getPopularProductIds() {
+    final productIds = _productIdsBox.get('popular_products');
+    return productIds != null ? productIds.popularProductIds : [];
+  }
+
+  // دریافت لیست پیشنهادات ویژه امروز
+  List<String> getSpecialOfferProductIds() {
+    final productIds = _productIdsBox.get('special_offer_products');
+    return productIds != null ? productIds.specialOfferProductIds : [];
+  }
+
+  // دریافت لیست جدیدترین محصولات
+  List<String> getNewProductIds() {
+    final productIds = _productIdsBox.get('new_products');
+    return productIds != null ? productIds.newProductIds : [];
+  }
+
+  // دریافت بنرها
+  List<BannerData> getBanners() {
+    return _bannerDataBox.values.toList();  // تمام بنرها
   }
 
   // درخواست API برای دریافت محصولات
   Future<void> fetchProducts() async {
-    print("fetchProducts nima");
+    print("fetchProducts nimaa");
     _isLoading = true;
 
 
@@ -40,7 +103,7 @@ class ProductProvider with ChangeNotifier {
       );
 
       if (response.isNotEmpty) {
-        print(response);
+        // print(response);
         final List<dynamic> data = response as List;
         // ایجاد لیستی از محصولات به صورت مستقیم
         _products = data.map((item) {
@@ -66,8 +129,10 @@ class ProductProvider with ChangeNotifier {
             image3: item['image3'] ?? '',
             isShowImage4: item['is_show_image4'] ?? '',
             stiker: item['stiker'] ?? '',
-            packing: item['packing'] ?? '',
-            priceVazn: item['pricevazn'] ?? 0,  // فرض کنید که مقدار عددی است
+           // packing: item['packing'] ?? '',
+            packing:'',
+
+            priceVazn: item['pricevazn'] ?? "0",  // فرض کنید که مقدار عددی است
             priceH: item['priceh'] ?? '',
             priceVaznH: item['pricevaznh'] ?? '',
             unit: item['unit'] ?? '',
@@ -98,6 +163,15 @@ class ProductProvider with ChangeNotifier {
         for (var product in _products) {
           await _productBox.put(product.id, product); // ذخیره محصول در Hive
         }
+        List<String> productIds = [
+          "195",
+          "720",
+          "721",
+          "722"
+        ];
+        // ProductIds productIds2=ProductIds(popularProductIds:productIds, specialOfferProductIds: productIds, newProductIds: productIds);
+        // await _productIdsBox.put('popular_products', productIds2);
+        savePopularProducts(productIds);
         notifyListeners();
       } else {
         print("No data received");
@@ -112,6 +186,30 @@ class ProductProvider with ChangeNotifier {
 
   // دریافت محصولات از دیتابیس Hive
   List<Product> getProductsFromDatabase() {
+    print("getProductsFromDatabase");
+    print(_productBox.values.length);
     return _productBox.values.toList(); // دریافت تمام محصولات از Hive
   }
+
+  List<Product> getPopularProductsFromDatabase() {
+    // دریافت idهای محبوب از دیتابیس
+    List<String> popularProductIds = getPopularProductIds();
+
+    // فیلتر کردن محصولات بر اساس idهای موجود در popularProductIds
+    List<Product> filteredProducts = _productBox.values.where((product) {
+      return popularProductIds.contains(product.id);  // بررسی اینکه id محصول در لیست popularProductIds باشد
+    }).toList();
+    print("${filteredProducts.length}getPopularProductsFromDatabase");
+
+    return filteredProducts;
+  }
+
+  List<String> getStoryImages() {
+    final shuffledHotels = List<Product>.from(_products)..shuffle();
+    return shuffledHotels.where((product) => product.image1.isNotEmpty).take(3).map((hotel) => hotel.image1).toList();
+  }
+
+  final List<String> _storyTitles = ["تضمین اصالت و خلوص محصولات", "پوشش کامل نیازهای دارویی و آزمایشگاهی", "محصولات تأییدشده و خالص"];
+
+  List<String> get storyTitles => _storyTitles;
 }

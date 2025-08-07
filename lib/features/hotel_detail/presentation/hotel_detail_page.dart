@@ -21,7 +21,7 @@ class HotelDetailPage extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return FutureBuilder<Hotel>(
-      future: hotelRepository.getHotelById(hotelId),
+      future: hotelRepository.getHotelById("2"),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Scaffold(

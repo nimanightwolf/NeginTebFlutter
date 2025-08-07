@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:neginteb/core/utils/network.dart';
 import 'package:neginteb/core/utils/price_formatter.dart';
-import 'package:neginteb/features/home/data/models/hotel.dart';
+import 'package:neginteb/data/models/product.dart';
 import 'package:neginteb/features/hotel_detail/presentation/hotel_detail_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
-class HotelCardVertical extends StatelessWidget {
-  final Hotel hotel;
+class ProductCardVertical extends StatelessWidget {
+  final Product product;
 
-  const HotelCardVertical({Key? key, required this.hotel}) : super(key: key);
+  const ProductCardVertical({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class HotelCardVertical extends StatelessWidget {
         PersistentNavBarNavigator.pushNewScreen(
           context,
           withNavBar: true,
-          screen: HotelDetailPage(hotelId: hotel.id),
+          screen: HotelDetailPage(hotelId: product.id),
           pageTransitionAnimation: PageTransitionAnimation.cupertino,
         );
       },
@@ -58,13 +58,13 @@ class HotelCardVertical extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     const SizedBox(height: 4),
-                    Text(hotel.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(product.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     const SizedBox(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          "${hotel.city}, ${hotel.country}",
+                          "${product.country}, ${product.country}",
                         ),
                         const SizedBox(width: 5),
                         Icon(Icons.location_on, color: Theme.of(context).colorScheme.primary, size: 18),
@@ -76,7 +76,7 @@ class HotelCardVertical extends StatelessWidget {
                       children: [
                         // Text("${hotel.bedType.count} ${hotel.bedType.type}"),
                         Text(
-                          "${hotel.bedType.count} ${hotel.bedType.details}",
+                          product.category,
                           textDirection: TextDirection.rtl,
                         ),
                         const SizedBox(width: 5),
@@ -84,7 +84,7 @@ class HotelCardVertical extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text("از ${formatPrice(hotel.pricePerNight)} / شب",
+                    Text("از ${formatPrice(int.parse(product.priceVazn ))} تومن ",
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 4),
                   ],
@@ -96,8 +96,15 @@ class HotelCardVertical extends StatelessWidget {
                 topRight: Radius.circular(15),
                 bottomRight: Radius.circular(15),
               ),
-              child: Image.network(
-                networkUrl(hotel.images[0]),
+              child: product.image1.isNotEmpty
+                  ? Image.network(
+                networkUrl(product.image1),  // بارگذاری تصویر از URL
+                width: 120,
+                height: double.infinity,
+                fit: BoxFit.cover,
+              )
+                  : Image.asset(  // تصویر پیش‌فرض محلی در صورت خالی بودن image1
+                'assets/images/ad_banner.png',  // مسیر تصویر ثابت
                 width: 100,
                 height: double.infinity,
                 fit: BoxFit.cover,

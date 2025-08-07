@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:neginteb/data/models/product.dart';
 import 'package:neginteb/features/home/data/models/hotel.dart';
 import 'package:neginteb/features/home/data/models/profile.dart';
 import 'package:neginteb/features/home/data/repositories/hotel_repository.dart';
 import 'package:neginteb/features/home/data/repositories/profile_repository.dart';
+import 'package:neginteb/features/home/presentation/provider/product_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileProvider extends ChangeNotifier {
   final ProfileRepository _profileRepository;
@@ -11,16 +14,20 @@ class ProfileProvider extends ChangeNotifier {
   Profile? _profile;
   Profile? get profile => _profile;
 
-  List<Hotel> _hotels = [];
+  List<Product> _product = [];
+  List<Product> get profileProducts => _product;
+  void loadProfileProducts(BuildContext context) {
+    final productProvider = Provider.of<ProductProvider>(context, listen: false);
+    _product = productProvider.getProductsFromDatabase();
+    notifyListeners();
+  }
 
   ProfileProvider(this._profileRepository, this._hotelRepository) {
-    fetchHotels();
+    //loadProfileProducts(contex);
     loadUserProfile();
   }
 
-  fetchHotels() async {
-    _hotels = await _hotelRepository.fetchHotels();
-  }
+
 
   loadUserProfile() async {
     _profile = await _profileRepository.fetchUserProfile();
@@ -29,18 +36,18 @@ class ProfileProvider extends ChangeNotifier {
 
   // Recently Viewed Hotels ---------------------------------------------------------------
 
-  final List<String> _recentlyViewedHotels = [];
+  final List<String> _recentlyViewedProduct = [];
 
-  List<Hotel> get recentlyViewedHotels =>
-      _hotels.where((hotel) => _recentlyViewedHotels.contains(hotel.id)).toList();
+  List<Product> get recentlyViewedProducts =>
+      _product.where((product) => _recentlyViewedProduct.contains(product.id)).toList();
 
   void addRecentlyViewed(String hotelId) {
-    if (!recentlyViewedHotels.contains(hotelId)) {
-      _recentlyViewedHotels.add(hotelId);
+    if (!recentlyViewedProducts.contains(hotelId)) {
+      _recentlyViewedProduct.add(hotelId);
       notifyListeners();
     } else {
-      _recentlyViewedHotels.remove(hotelId);
-      _recentlyViewedHotels.add(hotelId);
+      _recentlyViewedProduct.remove(hotelId);
+      _recentlyViewedProduct.add(hotelId);
       notifyListeners();
     }
   }

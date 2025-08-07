@@ -20,24 +20,32 @@ class StoryCarousel extends StatefulWidget {
 class StoryCarouselState extends State<StoryCarousel> {
   int _currentIndex = 0;
   late Timer _timer;
-  final CarouselSliderController _carouselController = CarouselSliderController();
+  late CarouselSliderController _carouselController;
 
   @override
   void initState() {
     super.initState();
+    _carouselController = CarouselSliderController();
     _startAutoSlide();
   }
 
   void _startAutoSlide() {
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      if (_currentIndex < widget.images.length - 1) {
-        _currentIndex++;
-      } else {
-        _currentIndex = 0;
-      }
+      // اطمینان از اینکه _carouselController به درستی مقداردهی شده است
+      if (_carouselController != null) {
+        if (_currentIndex < widget.images.length - 1) {
+          _currentIndex++;
+        } else {
+          _currentIndex = 0;
+        }
 
-      _carouselController.animateToPage(_currentIndex);
-      setState(() {});
+        // استفاده از animateToPage با اطمینان از اینکه کنترلر مقداردهی شده است
+        if(_currentIndex!=null) {
+          print("${_currentIndex}nimaaaa");
+          _carouselController?.animateToPage(_currentIndex);
+        }
+        setState(() {});
+      }
     });
   }
 

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:neginteb/features/home/data/models/hotel.dart';
-import 'package:neginteb/features/home/presentation/widgets/hotel_card_vertical.dart';
+import 'package:neginteb/data/models/product.dart';
 
-class HotelVerticalList extends StatelessWidget {
+import 'hotel_card_vertical.dart';
+
+class ProductVerticalList extends StatelessWidget {
   final String title;
-  final List<Hotel> hotels;
+  final List<Product> product;
 
-  const HotelVerticalList({super.key, required this.title, required this.hotels});
+  const ProductVerticalList({super.key, required this.title, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +24,14 @@ class HotelVerticalList extends StatelessWidget {
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: hotels.length,
+          itemCount: product.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 8,
               ),
-              child: HotelCardVertical(hotel: hotels[index]),
+              child: ProductCardVertical(product: product[index]),
             );
           },
         )

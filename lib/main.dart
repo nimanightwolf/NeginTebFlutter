@@ -17,6 +17,7 @@ import 'package:neginteb/features/home/presentation/provider/profile_provider.da
 import 'package:neginteb/features/onboarding/data/repositories/onboarding_repository.dart';
 import 'package:neginteb/features/onboarding/presentation/onboarding_provider.dart';
 import 'package:neginteb/routes/app_route.dart';
+
 import 'package:neginteb/shared/services/json_data_service.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 
 import 'data/models/product.dart';
+import 'data/models/product_ids.dart';
 import 'features/home/presentation/provider/product_provider.dart';
 import 'features/login/presentation/provider/auth_provider.dart';
 
@@ -33,6 +35,7 @@ void main() async {
   await Hive.initFlutter();
   // ثبت آداپتر برای مدل‌ها (برای Hive)
   Hive.registerAdapter(ProductAdapter());
+  Hive.registerAdapter(ProductIdsAdapter());
   // باز کردن دیتابیس Hive
   final productProvider = ProductProvider();
   await productProvider.openDatabase();

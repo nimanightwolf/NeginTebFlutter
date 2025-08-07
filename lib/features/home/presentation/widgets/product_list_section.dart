@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:neginteb/features/home/data/models/hotel.dart';
-import 'package:neginteb/features/home/presentation/widgets/hotel_card.dart';
+import 'package:neginteb/data/models/product.dart';
+import 'package:neginteb/features/home/presentation/widgets/product_card.dart';
 
-class HotelListSection extends StatelessWidget {
+class ProductListSection extends StatelessWidget {
   final String title;
-  final List<Hotel> hotels;
+  final List<Product> product;
   final VoidCallback? onSeeAllPressed;
 
-  HotelListSection({super.key, required this.title, required this.hotels, this.onSeeAllPressed});
+  const ProductListSection({super.key, required this.title, required this.product, this.onSeeAllPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +39,9 @@ class HotelListSection extends StatelessWidget {
             reverse: true,
             clipBehavior: Clip.none,
             scrollDirection: Axis.horizontal,
-            itemCount: hotels.length,
+            itemCount: product.length,
             itemBuilder: (context, index) {
-              return Padding(padding: EdgeInsets.only(left: 16), child: HotelCard(hotel: hotels[index]));
+              return Padding(padding: EdgeInsets.only(left: 16), child: ProductCard(product: product[index]));
             },
           ),
         ),

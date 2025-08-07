@@ -71,7 +71,7 @@ class Product {
   final String packing; // بسته‌بندی
 
   @HiveField(22)
-  final int priceVazn; // قیمت بر اساس وزن
+  final String priceVazn; // قیمت بر اساس وزن
 
   @HiveField(23)
   final String priceH; // قیمت
