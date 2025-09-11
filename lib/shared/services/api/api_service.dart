@@ -9,7 +9,7 @@ class ApiService {
     receiveTimeout: const Duration(seconds: 10),
     headers: {
       'Accept': 'application/json',
-      'Authorization': '3af58c785dad83e2a6e44f0b8e889a84cdbcc416c04ba765f57a4cc052d516be',},
+      'Authorization': '23504bb829f431745923e172423126591bd9822e6679efeb4ad71022167c4e17',},
   ));
 
   static Future<dynamic> post(String endpoint, {Map<String, dynamic>? data}) async {

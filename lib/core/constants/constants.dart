@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:neginteb/features/home/data/models/homepage_data.dart';
 
 class AppConstants {
-  static const String baseUrlImage = "http://shimetebnegin.ir/api/photo/";
+  static const String baseUrlImage = "https://shimetebnegin.ir/api/photo/";
   static const String hotelsData = "assets/data/hotels.json";
 }
 
