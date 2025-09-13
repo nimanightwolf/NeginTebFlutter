@@ -35,26 +35,15 @@ jobs:
       - name: Install SSH client
         run: sudo apt-get update && sudo apt-get install -y openssh-client
 
-      # Use ssh-agent action to load the private key from secrets (safer/reliable)
       - name: Start ssh-agent and add key
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
 
-      # Optional diagnostic: detect the header of the private key (shows key format only)
-      - name: Detect SSH private key header (diagnostic, safe)
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
-        run: |
-          # print only the first line of the key (like "-----BEGIN OPENSSH PRIVATE KEY-----")
-          echo "---- key header (for diagnostics) ----"
-          echo "${SSH_PRIVATE_KEY}" | sed -n '1p'
-          echo "--------------------------------------"
-
       - name: Add server to known_hosts (save fingerprint)
         env:
-          SSH_PORT: ${{ secrets.SSH_PORT }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SERVER_SSH_PORT }}
+          SSH_HOST: ${{ secrets.SERVER_SSH_HOST }}
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -p ${SSH_PORT} -H ${SSH_HOST} >> ~/.ssh/known_hosts 2>/dev/null || true
@@ -68,9 +57,9 @@ jobs:
 
       - name: Deploy to server (scp)
         env:
-          SSH_PORT: ${{ secrets.SSH_PORT }}
-          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SERVER_SSH_PORT }}
+          SSH_USERNAME: ${{ secrets.SERVER_SSH_USERNAME }}
+          SSH_HOST: ${{ secrets.SERVER_SSH_HOST }}
           REMOTE_PATH: ${{ secrets.SERVER_REMOTE_PATH }}
         run: |
           # Use scp (ssh-agent has already loaded the key)
