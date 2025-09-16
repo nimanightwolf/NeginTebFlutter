@@ -8,7 +8,7 @@ class AppConstants {
 }
 
 class AppColors {
-  static const Color primary = Color(0xFF63a002);
+  static const Color primary = Color(0xffa0021a);
 
   // Light Theme Colors
   static const Color lightText = Colors.black;
