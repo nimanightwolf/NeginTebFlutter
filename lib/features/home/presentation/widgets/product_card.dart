@@ -7,7 +7,7 @@ import 'package:neginteb/core/utils/network.dart';
 import 'package:neginteb/core/utils/price_formatter.dart';
 import 'package:neginteb/features/home/presentation/provider/favorite_item_provider.dart';
 import 'package:neginteb/features/home/presentation/widgets/animated_favorite_button.dart';
-import 'package:neginteb/features/hotel_detail/presentation/hotel_detail_page.dart';
+import 'package:neginteb/features/hotel_detail/presentation/product_detail_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +28,7 @@ class ProductCard extends StatelessWidget {
         PersistentNavBarNavigator.pushNewScreen(
           context,
           withNavBar: true,
-          screen: HotelDetailPage(hotelId: product.id),
+          screen: ProductDetailPage(hotelId: product.id),
           pageTransitionAnimation: PageTransitionAnimation.cupertino,
         );
       },

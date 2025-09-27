@@ -190,6 +190,21 @@ class ProductProvider with ChangeNotifier {
     print(_productBox.values.length);
     return _productBox.values.toList(); // دریافت تمام محصولات از Hive
   }
+  Future<Product> getProductsFromDatabaseById(String id) async {
+    print("getProductsFromDatabaseById");
+    print(_productBox.get(id)?.id.toString());
+   // return _productBox.get(id); // دریافت  محصول از Hive
+    try {
+      // شبیه‌سازی تاخیر کوتاه اگر لازم باشه
+      await Future.delayed(Duration(milliseconds: 50));
+
+      final product = _productBox.get(id); // مستقیم از Hive با key
+      return product!;
+    } catch (e) {
+      print("Error getting product by ID: $e");
+      return Product(id: '', userId: '', title: '', nameHolo: '', nameLatin: '', country: '', dateEx: '', datePd: '', price: '', priceType: '', description: '', keyWord: '', furmol: '', category: '', date: '', status: '', image1: '', image2: '', image3: '', isShowImage4: '', stiker: '', packing: '', priceVazn: '', priceH: '', priceVaznH: '', unit: '', mojodiAll: '', wast: '', linkPdf: '', priceShopUs: '', sort: '', categoryTitle: '', relate: '', offer: '', linkVideo: '', naghdi: '', delet: '', offerTwo: '', idHolo: '', artNo: '', fourmulOne: '', fourmulTwo: '', minNumber: '', maxNumber: '', darsadVisitor: '');
+    }
+  }
 
   List<Product> getPopularProductsFromDatabase() {
     // دریافت idهای محبوب از دیتابیس
