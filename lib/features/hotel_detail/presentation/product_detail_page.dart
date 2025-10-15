@@ -82,7 +82,7 @@ class ProductDetailPage extends StatelessWidget {
                         height: 8,
                       ),
                       Text(
-                        " ریال${hotel.priceVazn}  ${hotel.unit} قیمت هر ",
+                        " قیمت هر${hotel.unit}  ${hotel.priceVazn}ریال ",
                         style: textTheme.headlineSmall,
                         textDirection: TextDirection.rtl,
                       ),
