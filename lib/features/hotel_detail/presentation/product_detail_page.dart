@@ -81,6 +81,11 @@ class ProductDetailPage extends StatelessWidget {
                       SizedBox(
                         height: 8,
                       ),
+                      Text(
+                        " ریال${hotel.priceVazn}  ${hotel.unit} قیمت هر ",
+                        style: textTheme.headlineSmall,
+                        textDirection: TextDirection.rtl,
+                      ),
                       Row(
                         children: [
                           Expanded(
