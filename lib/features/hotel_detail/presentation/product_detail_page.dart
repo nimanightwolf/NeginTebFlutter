@@ -12,6 +12,7 @@ import 'package:neginteb/features/hotel_detail/presentation/full_screen_image_sh
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../../../shared/services/api/sendBuyRequest.dart';
 import '../../home/presentation/provider/product_provider.dart';
 
 class ProductDetailPage extends StatelessWidget {
@@ -495,7 +496,23 @@ class _PricingSectionState extends State<_PricingSection> {
               const SizedBox(width: 24),
               // مثبت
               InkWell(
-                onTap: () => setState(() => qty++),
+                onTap: () {
+                  final available = checkMojodePack(
+                    packingJson: widget.hotel.packing,
+                    selectedPacking: selectedPacking,
+                  );
+
+                  if (available <= 0) {
+                    _showSnack(context, 'موجودی این بسته صفر است');
+                    return;
+                  }
+
+                  if (qty < available) {
+                    setState(() => qty++);
+                  } else {
+                    _showSnack(context, 'حداکثر تعداد مجاز: $available');
+                  }
+                },
                 child: Container(
                   width: 64,
                   height: 48,
@@ -508,6 +525,7 @@ class _PricingSectionState extends State<_PricingSection> {
                   child: const Icon(Icons.add, size: 28, color: Color(0xFF2E7D32)),
                 ),
               ),
+
             ],
           ),
 
@@ -566,17 +584,63 @@ class _PricingSectionState extends State<_PricingSection> {
                 backgroundColor: const Color(0xFF43A047),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               ),
-              onPressed: () {
-                // TODO: افزودن به سبد خرید
-                // priceAllWithOffer عدد نهایی قابل پرداخت است.
+              onPressed: () async {
+                // موجودی بسته‌ی انتخاب‌شده
+                final available = checkMojodePack(
+                  packingJson: widget.hotel.packing,
+                  selectedPacking: selectedPacking,
+                );
+
+                if (available <= 0) {
+                  _showSnack(context, 'این بسته موجود نیست');
+                  return;
+                }
+
+                if (qty > available) {
+                  _showSnack(context, 'حداکثر موجودی این بسته: $available');
+                  // می‌تونی بخوای خودت خودکار اصلاحش کنی:
+                  // setState(() => qty = available);
+                  return;
+                }
+
+                // (اختیاری) رعایت حداقل/حداکثر خرید از خود محصول
+                final minLimit = _asInt(widget.hotel.minNumber); // اگر رشته است
+                final maxLimit = _asInt(widget.hotel.maxNumber);
+
+                if (maxLimit > 0 && qty > maxLimit) {
+                  _showSnack(context, 'حداکثر تعداد مجاز: $maxLimit');
+                  return;
+                }
+
+                // در این نقطه همه‌چیز اوکیه → افزودن به سبد
+                // priceAllWithOffer همون عدد نهایی محاسبه‌شده‌ست (اگر بالا محاسبه کردی).
+                // TODO: کالای انتخابی رو به سبد اضافه کن
+                // cartProvider.addItem(product: widget.hotel, packing: selectedPacking, qty: qty, price: priceAllWithOffer);
+
+                _showSnack(context, 'به سبد افزوده شد');
+                await sendBuyRequest(
+                context: context,
+                hotel: widget.hotel,
+                selectedPacking: selectedPacking,
+                qty: qty,
+                userId: 1095, // یا از SharedPrefs بگیر
+                naghdi: paymentType == PaymentType.cashWithOffer ? "1" : "0",
+                priceAllWithOffer: priceAllWithOffer.toDouble(),
+                );
               },
               child: Text('افزودن به سبد خرید', style: t.titleLarge?.copyWith(color: Colors.white)),
-            ),
+            )
+
           ),
         ],
       ),
     );
   }
+}
+void _showSnack(BuildContext context, String msg) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(msg, textDirection: TextDirection.rtl)),
+  );
 }
 double asDouble(dynamic v) {
   if (v == null) return 0;
