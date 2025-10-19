@@ -18,6 +18,7 @@ import '../../home/presentation/provider/product_provider.dart';
 
 class ProductDetailPage extends StatelessWidget {
   const ProductDetailPage({super.key, required this.hotelId});
+
   final String hotelId;
 
   @override
@@ -49,11 +50,14 @@ class ProductDetailPage extends StatelessWidget {
                   background: GestureDetector(
                     onLongPress: () {
                       PersistentNavBarNavigator.pushNewScreen(context,
-                          screen: FullScreenImageShower(myImageUrl: hotel.image1),
+                          screen:
+                              FullScreenImageShower(myImageUrl: hotel.image1),
                           withNavBar: false,
-                          pageTransitionAnimation: PageTransitionAnimation.cupertino);
+                          pageTransitionAnimation:
+                              PageTransitionAnimation.cupertino);
                     },
-                    child: Image.network(fit: BoxFit.cover, networkUrl(hotel.image1)),
+                    child: Image.network(
+                        fit: BoxFit.cover, networkUrl(hotel.image1)),
                   ),
                 ),
                 elevation: 8,
@@ -73,18 +77,34 @@ class ProductDetailPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        hotel.title,
-                        style: textTheme.headlineMedium,
-                        textDirection: TextDirection.rtl,
+                      Center(
+                        child: Text(
+                          hotel.title,
+                          style: textTheme.headlineMedium,
+                          textDirection: TextDirection.rtl,
+                        ),
                       ),
                       SizedBox(
-                        height: 8,
+                        height: 12,
                       ),
-                      Text(
-                        " قیمت هر${hotel.unit}  ${hotel.priceVazn}ریال ",
-                        style: textTheme.headlineSmall,
-                        textDirection: TextDirection.rtl,
+                      Center(
+                        child: Text(
+                          " قیمت هر${hotel.unit}  ${hotel.priceVazn}ریال ",
+                          style: textTheme.headlineSmall,
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          " قیمت هر${hotel.unit} در صورت پرداخت نقدی ${hotel.priceVazn}ریال ",
+                          style: textTheme.headlineSmall,
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ),
+                      Container(
+                        height: 1,                   // ضخامت خط
+                        color: Colors.black,         // رنگ خط
+                        margin: EdgeInsets.symmetric(vertical: 8), // فاصله بالا و پایین
                       ),
                       Row(
                         children: [
@@ -93,7 +113,8 @@ class ProductDetailPage extends StatelessWidget {
                               hotel.country,
                               textAlign: TextAlign.right,
                               textDirection: TextDirection.rtl,
-                              style: TextStyle(fontSize: 14, color: Colors.grey),
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.grey),
                             ),
                           ),
                           SizedBox(
@@ -194,23 +215,25 @@ class ProductDetailPage extends StatelessWidget {
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           reverse: true,
-                          itemCount: hotel.image1.length,
+                          itemCount: 3,
                           itemBuilder: (context, index) {
                             return Row(
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    PersistentNavBarNavigator.pushNewScreen(context,
+                                    PersistentNavBarNavigator.pushNewScreen(
+                                        context,
                                         screen: FullScreenImageShower(
-                                          myImageUrl: hotel.image1[index],
+                                          myImageUrl: hotel.image1,
                                         ),
                                         withNavBar: false,
-                                        pageTransitionAnimation: PageTransitionAnimation.cupertino);
+                                        pageTransitionAnimation:
+                                            PageTransitionAnimation.cupertino);
                                   },
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.network(
-                                      networkUrl(hotel.image1[index]),
+                                      networkUrl(hotel.image1),
                                       width: 120,
                                       height: 100,
                                       fit: BoxFit.cover,
@@ -281,12 +304,14 @@ class ProductDetailPage extends StatelessWidget {
                               initialZoom: 15.0,
                               // initialCenter: LatLng(hotel.location.latitude, hotel.location.longitude),
                               interactionOptions: InteractionOptions(
-                                flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                                flags: InteractiveFlag.all &
+                                    ~InteractiveFlag.rotate,
                               ),
                             ),
                             children: [
                               TileLayer(
-                                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                urlTemplate:
+                                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                                 userAgentPackageName: 'ir.dunijet.neginteb',
                               ),
                               MarkerLayer(
