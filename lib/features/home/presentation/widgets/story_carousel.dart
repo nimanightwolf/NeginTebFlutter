@@ -42,7 +42,7 @@ class StoryCarouselState extends State<StoryCarousel> {
         // استفاده از animateToPage با اطمینان از اینکه کنترلر مقداردهی شده است
         if(_currentIndex!=null) {
           print("${_currentIndex}nimaaaa");
-          _carouselController?.animateToPage(_currentIndex);
+          _carouselController.animateToPage(_currentIndex);
         }
         setState(() {});
       }

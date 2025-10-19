@@ -129,8 +129,8 @@ class ProductProvider with ChangeNotifier {
             image3: item['image3'] ?? '',
             isShowImage4: item['is_show_image4'] ?? '',
             stiker: item['stiker'] ?? '',
-           // packing: item['packing'] ?? '',
-            packing:'',
+           packing: item['packing'].toString() ?? '',
+            // packing:'',
 
             priceVazn: item['pricevazn'] ?? "0",  // فرض کنید که مقدار عددی است
             priceH: item['priceh'] ?? '',

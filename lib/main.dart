@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 
-import 'package:dio/dio.dart';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -40,7 +40,7 @@ void main() async {
   final productProvider = ProductProvider();
   await productProvider.openDatabase();
 
-  final dio = Dio();
+  //final dio = Dio();
   //final database = AppDatabase(NativeDatabase.memory());  // برای پایگاه داده در حافظه یا فایل
 
   // اضافه کردن داده به دیتابیس
