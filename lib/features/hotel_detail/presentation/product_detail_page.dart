@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:neginteb/core/utils/network.dart';
@@ -35,6 +37,7 @@ class ProductDetailPage extends StatelessWidget {
         }
 
         final hotel = snapshot.data!;
+        final List<double> packings = packingsFromString(hotel.packing);
         final images = [
           hotel.image1,
           hotel.image2,
@@ -231,7 +234,6 @@ class ProductDetailPage extends StatelessWidget {
                       SizedBox(
                         height: 8,
                       ),
-                      _PricingSection(hotel: hotel),
                       Text(
                         hotel.description,
                         style: textTheme.bodyMedium!.copyWith(height: 1.5),
@@ -239,86 +241,65 @@ class ProductDetailPage extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         maxLines: 8,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                              onPressed: () {
-                                // PersistentNavBarNavigator.pushNewScreen(context,
-                                //     // screen: FullScreenMapPage(
-                                //     //     latitude: hotel.country.latitude,
-                                //     //     longitude: hotel.location.longitude,
-                                //     //     hotelName: hotel.name),
-                                //     withNavBar: false,
-                                //     pageTransitionAnimation: PageTransitionAnimation.cupertino);
-                              },
-                              child: Text(
-                                "تمام صفحه",
-                                textDirection: TextDirection.rtl,
-                              )),
-                          Text(
-                            "موقعیت مکانی هتل روی نقشه",
-                            style: textTheme.headlineSmall,
-                            textDirection: TextDirection.rtl,
-                          )
-                        ],
-                      ),
+                      _PricingSection(hotel: hotel),
+
+
                       SizedBox(
                         height: 8,
                       ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 200,
-                          child: FlutterMap(
-                            options: MapOptions(
-                              initialZoom: 15.0,
-                              // initialCenter: LatLng(hotel.location.latitude, hotel.location.longitude),
-                              interactionOptions: InteractionOptions(
-                                flags: InteractiveFlag.all &
-                                    ~InteractiveFlag.rotate,
-                              ),
-                            ),
-                            children: [
-                              TileLayer(
-                                urlTemplate:
-                                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                userAgentPackageName: 'ir.dunijet.neginteb',
-                              ),
-                              MarkerLayer(
-                                markers: [
-                                  // Marker(
-                                  //     point: LatLng(hotel.location.latitude, hotel.location.longitude),
-                                  //     width: 80,
-                                  //     height: 80,
-                                  //     child: Column(
-                                  //       children: [
-                                  //         Icon(
-                                  //           Icons.location_pin,
-                                  //           color: Colors.red,
-                                  //           size: 40,
-                                  //         ),
-                                  //         Container(
-                                  //           padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                                  //           color: Colors.white.withOpacity(0.8),
-                                  //           child: Text(
-                                  //             hotel.name,
-                                  //             style: textTheme.bodySmall!.copyWith(color: Colors.black),
-                                  //             textDirection: TextDirection.rtl,
-                                  //             textAlign: TextAlign.center,
-                                  //             maxLines: 1,
-                                  //             overflow: TextOverflow.ellipsis,
-                                  //           ),
-                                  //
-                                  //       ],
-                                  //     )),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // ClipRRect(
+                      //   borderRadius: BorderRadius.circular(12),
+                      //   child: SizedBox(
+                      //     width: double.infinity,
+                      //     height: 200,
+                      //     child: FlutterMap(
+                      //       options: MapOptions(
+                      //         initialZoom: 15.0,
+                      //         // initialCenter: LatLng(hotel.location.latitude, hotel.location.longitude),
+                      //         interactionOptions: InteractionOptions(
+                      //           flags: InteractiveFlag.all &
+                      //               ~InteractiveFlag.rotate,
+                      //         ),
+                      //       ),
+                      //       children: [
+                      //         TileLayer(
+                      //           urlTemplate:
+                      //               'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      //           userAgentPackageName: 'ir.dunijet.neginteb',
+                      //         ),
+                      //         MarkerLayer(
+                      //           markers: [
+                      //             // Marker(
+                      //             //     point: LatLng(hotel.location.latitude, hotel.location.longitude),
+                      //             //     width: 80,
+                      //             //     height: 80,
+                      //             //     child: Column(
+                      //             //       children: [
+                      //             //         Icon(
+                      //             //           Icons.location_pin,
+                      //             //           color: Colors.red,
+                      //             //           size: 40,
+                      //             //         ),
+                      //             //         Container(
+                      //             //           padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                      //             //           color: Colors.white.withOpacity(0.8),
+                      //             //           child: Text(
+                      //             //             hotel.name,
+                      //             //             style: textTheme.bodySmall!.copyWith(color: Colors.black),
+                      //             //             textDirection: TextDirection.rtl,
+                      //             //             textAlign: TextAlign.center,
+                      //             //             maxLines: 1,
+                      //             //             overflow: TextOverflow.ellipsis,
+                      //             //           ),
+                      //             //
+                      //             //       ],
+                      //             //     )),
+                      //           ],
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(
                         height: 0,
                       ),
@@ -347,7 +328,7 @@ class _PricingSection extends StatefulWidget {
 
 class _PricingSectionState extends State<_PricingSection> {
   // لیست گزینه‌های بسته‌بندی (گرم) — اگر در مدل داری، جایگزین کن
-  final List<double> packings = [60, 100, 250, 500, 1000];
+
 
   late double selectedPacking; // گرم
   int qty = 1;
@@ -358,7 +339,8 @@ class _PricingSectionState extends State<_PricingSection> {
   @override
   void initState() {
     super.initState();
-    selectedPacking = packings.first;
+    final packs = packingsFromString(widget.hotel.packing);
+    selectedPacking = packs.first; // مثلاً 60
 
   }
 
@@ -369,7 +351,7 @@ class _PricingSectionState extends State<_PricingSection> {
     // ===== داده‌های محصول =====
     // قیمت به ازای هر "گرم" (یا واحد پایه). اگر اسم فیلد متفاوته، اینجا عوضش کن.
     final double pricePerGram = asDouble(widget.hotel.priceVazn ?? 0);
-
+    final List<double> packings = packingsFromString(widget.hotel.packing);
     // درصد افر مطابق منطق جاوا:
     // if (str_naghde_or_ade == "0") => offer
     // else => offer_two
@@ -471,17 +453,14 @@ class _PricingSectionState extends State<_PricingSection> {
               const SizedBox(width: 12),
               DropdownButton<double>(
                 value: selectedPacking,
-                underline: Container(height: 1, color: Colors.black54),
                 items: packings
                     .map((g) => DropdownMenuItem(
                   value: g,
-                  child: Text((g).toString(), textDirection: TextDirection.ltr),
+                  child: Text(g.toStringAsFixed(g % 1 == 0 ? 0 : 2),
+                      textDirection: TextDirection.ltr),
                 ))
                     .toList(),
-                onChanged: (v) {
-                  if (v == null) return;
-                  setState(() => selectedPacking = v);
-                },
+                onChanged: (v) => setState(() => selectedPacking = v!),
               ),
               const SizedBox(width: 12),
               Text('بسته‌ی', style: t.titleMedium, textDirection: TextDirection.rtl),
@@ -609,6 +588,20 @@ double asDouble(dynamic v) {
   }
   return 0;
 }
+String _toLatinDigits(String s) {
+  const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹','٬','،'];
+  const en = ['0','1','2','3','4','5','6','7','8','9',',',','];
+  for (var i = 0; i < fa.length; i++) {
+    s = s.replaceAll(fa[i], en[i]);
+  }
+  return s;
+}
+int _asInt(dynamic v) {
+  if (v == null) return 0;
+  if (v is num) return v.toInt();
+  final s = _toLatinDigits(v.toString()).replaceAll(',', '').trim();
+  return int.tryParse(s) ?? 0;
+}
 bool _isBlank(String? s) => s == null || s.trim().isEmpty;
 
 class _InfoRow extends StatelessWidget {
@@ -665,5 +658,38 @@ class _InfoRow extends StatelessWidget {
     );
   }
 }
+/// packingJson: رشته‌ی برگشتی از سرور (مثلاً:
+///   '[{"id":505170,"id_product_holo":505170,"number":1425,"vazn":25}]')
+/// selectedPacking: وزنی که کاربر در Dropdown انتخاب کرده (مثلاً 25.0)
+int checkMojodePack({required String? packingJson, required double selectedPacking}) {
+  if (packingJson == null || packingJson.trim().isEmpty) return 0;
+
+  try {
+    final raw = _toLatinDigits(packingJson.trim());
+    final decoded = jsonDecode(raw);
+
+    if (decoded is List) {
+      for (final e in decoded) {
+        if (e is Map) {
+          final v = asDouble(e['vazn']);
+          if ((v - selectedPacking).abs() < 1e-6) {
+            // اگر کلید 'number' وجود نداشت، 0 برمی‌گرده
+            return _asInt(e['number']);
+          }
+        }
+      }
+    } else if (decoded is Map) {
+      // در صورتی که سرور یک آبجکت تکی فرستاده باشد
+      final v = asDouble(decoded['vazn']);
+      if ((v - selectedPacking).abs() < 1e-6) {
+        return _asInt(decoded['number']);
+      }
+    }
+  } catch (_) {
+    // اگر JSON نبود (مثلاً CSV ساده)، اطلاعات number نداریم → 0
+  }
+  return 0;
+}
+
 
 

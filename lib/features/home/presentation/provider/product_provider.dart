@@ -7,6 +7,7 @@ import '../../../../data/models/banner_data.dart';
 import '../../../../data/models/product_ids.dart';
 import '../../../../data/models/product.dart';
 import '../../../../shared/services/api/api_service.dart';
+import 'dart:convert'; // برای jsonEncode/jsonDecode
 
 
 class ProductProvider with ChangeNotifier {
@@ -103,7 +104,7 @@ class ProductProvider with ChangeNotifier {
       );
 
       if (response.isNotEmpty) {
-        // print(response);
+        print(response);
         final List<dynamic> data = response as List;
         // ایجاد لیستی از محصولات به صورت مستقیم
         _products = data.map((item) {
@@ -129,8 +130,9 @@ class ProductProvider with ChangeNotifier {
             image3: item['image3'] ?? '',
             isShowImage4: item['is_show_image4'] ?? '',
             stiker: item['stiker'] ?? '',
-           packing: item['packing'].toString() ?? '',
-            // packing:'',
+            packing: _normalizePacking(item['packing']),
+           // packing: item['packing'].toString() ?? '',
+            //packing:'',
 
             priceVazn: item['pricevazn'] ?? "0",  // فرض کنید که مقدار عددی است
             priceH: item['priceh'] ?? '',
@@ -169,9 +171,16 @@ class ProductProvider with ChangeNotifier {
           "721",
           "722"
         ];
+        final top5Ids = _products
+            .where(_hasAnyImage)                 // فقط با حداقل یک عکس
+            .map((p) => (p.id).toString())
+            .where((id) => id.isNotEmpty)        // آی‌دی خالی حذف
+            .toSet()                              // یکتا؛ ترتیب اولین وقوع حفظ می‌شود
+            .take(5)
+            .toList();
         // ProductIds productIds2=ProductIds(popularProductIds:productIds, specialOfferProductIds: productIds, newProductIds: productIds);
         // await _productIdsBox.put('popular_products', productIds2);
-        savePopularProducts(productIds);
+        savePopularProducts(top5Ids);
         notifyListeners();
       } else {
         print("No data received");
@@ -183,6 +192,11 @@ class ProductProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+  bool _notBlank(String? s) =>
+      s != null && s.trim().isNotEmpty && s.trim().toLowerCase() != 'null';
+
+  bool _hasAnyImage(Product p) =>
+      _notBlank(p.image1) || _notBlank(p.image2) || _notBlank(p.image3);
 
   // دریافت محصولات از دیتابیس Hive
   List<Product> getProductsFromDatabase() {
@@ -227,4 +241,42 @@ class ProductProvider with ChangeNotifier {
   final List<String> _storyTitles = ["تضمین اصالت و خلوص محصولات", "پوشش کامل نیازهای دارویی و آزمایشگاهی", "محصولات تأییدشده و خالص"];
 
   List<String> get storyTitles => _storyTitles;
+}
+String _normalizePacking(dynamic raw) {
+  // خروجی: یک رشته‌ی JSON معتبر
+  // ورودی ممکن است: null | String | List | Map (مثل نمونه‌ای که دادی)
+  if (raw == null) return '[]';
+
+  if (raw is String) {
+    // اگر خودِ سرور رشته برگردونده: سعی کن ببینی JSON هست یا CSV ساده
+    final s = raw.trim();
+    if (s.isEmpty) return '[]';
+
+    // اگر رشته با [ یا { شروع می‌شود، احتمالاً JSON است → همان را ذخیره کن
+    if (s.startsWith('[') || s.startsWith('{')) {
+      return s;
+    }
+
+    // در غیر این صورت: CSV مثل "60,100,250"
+    final parts = s.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty);
+    final list = parts
+        .map((e) => double.tryParse(e) ?? 0)
+        .where((v) => v > 0)
+        .toList();
+    return jsonEncode(list.map((v) => {'vazn': v}).toList());
+  }
+
+  if (raw is List) {
+    // نمونه‌ای که دادی: [{id_product_holo: 505170, number: 1425, vazn: 25, id: 505170}]
+    // مستقیم JSON کن
+    return jsonEncode(raw);
+  }
+
+  if (raw is Map) {
+    // اگر به‌جای لیست، یک شیء واحد آمد
+    return jsonEncode([raw]);
+  }
+
+  // هر چیز ناشناخته‌ای → آرایه‌ی خالی
+  return '[]';
 }

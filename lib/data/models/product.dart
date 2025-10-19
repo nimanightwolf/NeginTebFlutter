@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hive/hive.dart';
 
 part 'product.g.dart';  // برای تولید کدهای Hive
@@ -186,4 +188,86 @@ class Product {
     required this.maxNumber,
     required this.darsadVisitor,
   });
+  List<double> parsePackingsFromJsonString(String packingJson) {
+    if (packingJson.isEmpty) return [60]; // پیش‌فرض
+    try {
+      final decoded = jsonDecode(packingJson);
+
+      // حالت ۱: آرایه‌ای از آبجکت‌ها با کلید 'vazn'
+      if (decoded is List && decoded.isNotEmpty) {
+        // اگر آبجکت هستند
+        if (decoded.first is Map) {
+          final vals = decoded
+              .map((e) => (e as Map))
+              .map((m) => m['vazn'])
+              .map((v) => v is num ? v.toDouble() : double.tryParse(v?.toString() ?? '') ?? 0)
+              .where((v) => v > 0)
+              .toList();
+          if (vals.isNotEmpty) return vals;
+        }
+
+        // اگر لیست اعداد ساده است [60,100,...]
+        if (decoded.first is num) {
+          return (decoded as List).map((n) => (n as num).toDouble()).where((v) => v > 0).toList();
+        }
+        if (decoded.first is String) {
+          return (decoded as List)
+              .map((s) => double.tryParse(s as String) ?? 0)
+              .where((v) => v > 0)
+              .toList();
+        }
+      }
+    } catch (_) {
+      // اگر JSON نبود (نادر، چون normalize کردیم) نادیده بگیر
+    }
+    return [60]; // fallback
+  }
+}
+List<double> packingsFromString(String? packingStr) {
+  if (packingStr == null || packingStr.trim().isEmpty) return [60];
+
+  final raw = _toLatinDigits(packingStr.trim());
+
+  // اگر JSON باشد
+  if (raw.startsWith('[') || raw.startsWith('{')) {
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is List) {
+        if (decoded.isEmpty) return [60];
+
+        // حالت آرایه‌ای از آبجکت‌ها با کلید 'vazn'
+        if (decoded.first is Map) {
+          final vals = decoded
+              .map((e) => (e as Map)['vazn'])
+              .map((v) => v is num ? v.toDouble() : double.tryParse(v?.toString() ?? '') ?? 0)
+              .where((v) => v > 0)
+              .toList();
+          if (vals.isNotEmpty) return vals;
+        }
+
+        // حالت آرایه‌ای از اعداد یا رشته‌ها
+        final vals = decoded
+            .map((e) => e is num ? e.toDouble() : double.tryParse(e?.toString() ?? '') ?? 0)
+            .where((v) => v > 0)
+            .toList();
+        if (vals.isNotEmpty) return vals;
+      }
+    } catch (_) {/* می‌افتیم به CSV */}
+  }
+
+  // در غیر این صورت CSV مثل: "60,100,250" یا با ویرگول فارسی "60،100"
+  final parts = raw.replaceAll('،', ',').split(',');
+  final vals = parts
+      .map((e) => double.tryParse(e.trim()) ?? 0)
+      .where((v) => v > 0)
+      .toList();
+  return vals.isNotEmpty ? vals : [60];
+}
+String _toLatinDigits(String s) {
+  const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+  const en = ['0','1','2','3','4','5','6','7','8','9'];
+  for (var i = 0; i < fa.length; i++) {
+    s = s.replaceAll(fa[i], en[i]);
+  }
+  return s;
 }
