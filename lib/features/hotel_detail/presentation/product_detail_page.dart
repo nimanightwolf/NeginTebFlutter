@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../shared/services/api/api_service.dart';
 import '../../../shared/services/api/sendBuyRequest.dart';
 import '../../home/presentation/provider/product_provider.dart';
+import '../../home/presentation/provider/profile_provider.dart';
 
 class ProductDetailPage extends StatelessWidget {
   const ProductDetailPage({super.key, required this.hotelId});
@@ -354,6 +355,10 @@ class _PricingSectionState extends State<_PricingSection> {
     super.initState();
     final packs = packingsFromString(widget.hotel.packing);
     selectedPacking = packs.first; // مثلاً 60
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileProvider>().addRecentlyViewed(widget.hotel.id);
+      context.read<ProfileProvider>().loadProfileProducts(context);
+    });
   }
 
   @override

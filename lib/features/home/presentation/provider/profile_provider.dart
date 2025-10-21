@@ -25,6 +25,7 @@ class ProfileProvider extends ChangeNotifier {
   ProfileProvider(this._profileRepository, this._hotelRepository) {
     //loadProfileProducts(contex);
     loadUserProfile();
+
   }
 
 
@@ -38,17 +39,22 @@ class ProfileProvider extends ChangeNotifier {
 
   final List<String> _recentlyViewedProduct = [];
 
-  List<Product> get recentlyViewedProducts =>
-      _product.where((product) => _recentlyViewedProduct.contains(product.id)).toList();
+  List<Product> get recentlyViewedProducts {
 
-  void addRecentlyViewed(String hotelId) {
-    if (!recentlyViewedProducts.contains(hotelId)) {
-      _recentlyViewedProduct.add(hotelId);
-      notifyListeners();
-    } else {
-      _recentlyViewedProduct.remove(hotelId);
-      _recentlyViewedProduct.add(hotelId);
-      notifyListeners();
+    return _product.where((product) => _recentlyViewedProduct.contains(product.id)).toList();
+  }
+
+
+  void addRecentlyViewed(String productId) {
+    print("addRecentlyViewed$productId");
+    _recentlyViewedProduct.remove(productId);
+    _recentlyViewedProduct.add(productId);
+
+    const maxItems = 20;
+    if (_recentlyViewedProduct.length > maxItems) {
+      _recentlyViewedProduct.removeRange(0, _recentlyViewedProduct.length - maxItems);
     }
+
+    notifyListeners();
   }
 }

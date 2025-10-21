@@ -19,6 +19,9 @@ class HomeProvider extends ChangeNotifier {
 
   fetchHotels() async {
     _hotels = await _hotelRepository.fetchHotels();
+    if(_hotels.isEmpty){
+
+    }
     notifyListeners();
   }
 

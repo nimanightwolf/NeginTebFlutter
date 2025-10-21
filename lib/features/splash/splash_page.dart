@@ -1,6 +1,5 @@
 // splash_page.dart
 import 'package:flutter/material.dart';
-import 'package:neginteb/features/test/product_list_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:neginteb/routes/app_route.dart';
@@ -35,7 +34,7 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    final userId = prefs.getString('user_id');
+    final userId = prefs.getInt('user_id');
     print(token);
     print(userId);
 

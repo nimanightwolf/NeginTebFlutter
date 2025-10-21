@@ -111,11 +111,11 @@ class ApiService {
       }
 
       // اگر هیچ‌کدام از این‌ها نباشد، آرایه خالی برمی‌گردانیم
-      return [];
+      return ['error:error'];
 
     } catch (e) {
       print('Request error: $e');
-      return [];
+      return ['error:error'];
     }
   }
 

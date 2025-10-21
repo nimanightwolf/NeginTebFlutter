@@ -28,7 +28,7 @@ class _MainButtomNavState extends State<MainButtomNav> {
   }
 
   _buildScreens() {
-    return [HomePage(), FavoritePage(),BookingPage(), ProfilePage()];
+    return [HomePage(), ListBuyPage(),BookingPage(), ProfilePage()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {

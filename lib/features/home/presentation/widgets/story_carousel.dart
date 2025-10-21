@@ -26,28 +26,31 @@ class StoryCarouselState extends State<StoryCarousel> {
   void initState() {
     super.initState();
     _carouselController = CarouselSliderController();
-    _startAutoSlide();
-  }
 
-  void _startAutoSlide() {
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      // اطمینان از اینکه _carouselController به درستی مقداردهی شده است
-      if (_carouselController != null) {
-        if (_currentIndex < widget.images.length - 1) {
-          _currentIndex++;
-        } else {
-          _currentIndex = 0;
-        }
-
-        // استفاده از animateToPage با اطمینان از اینکه کنترلر مقداردهی شده است
-        if(_currentIndex!=null) {
-          print("${_currentIndex}nimaaaa");
-          _carouselController.animateToPage(_currentIndex);
-        }
-        setState(() {});
-      }
+    // بعد از اولین فریم و آماده‌شدن کنترلر، تایمر را شروع کن
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _carouselController.onReady;
+      // if (!mounted || widget.images.isEmpty) return;
+      _startAutoSlide();
     });
   }
+
+
+  void _startAutoSlide() {
+    // اگر هیچ عکسی نیست تایمر نساز
+    // if (widget.images.isEmpty) return;
+
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+      if (!mounted || widget.images.isEmpty) return;
+      if (!_carouselController.ready) return;
+
+      // محاسبه اندیس بعدی
+      final next = (_currentIndex + 1) % widget.images.length;
+      await _safeAnimateTo(next);
+      if (mounted) setState(() => _currentIndex = next);
+    });
+  }
+
 
   @override
   void dispose() {
@@ -55,26 +58,39 @@ class StoryCarouselState extends State<StoryCarousel> {
     super.dispose();
   }
 
-  void _nextImage() {
-    setState(() {
-      if (_currentIndex < widget.images.length - 1) {
-        _currentIndex++;
-      } else {
-        _currentIndex = 0;
+  void _nextImage() async {
+    if (widget.images.isEmpty) return;
+    final next = (_currentIndex + 1) % widget.images.length;
+    await _safeAnimateTo(next);
+    if (mounted) setState(() => _currentIndex = next);
+  }
+  Future<void> _safeAnimateTo(int page) async {
+    if (!mounted) return;
+    if (widget.images.isEmpty) return;
+
+    // صبر کن تا کنترلر آماده شود
+    await _carouselController.onReady;
+
+    // اگر باز هم آماده نبود یا ایندکس نامعتبر بود، برنگرد
+    if (!_carouselController.ready) return;
+    if (page < 0 || page >= widget.images.length) return;
+
+    try {
+      await _carouselController.animateToPage(page);
+    } catch (_) {
+      // اگر هنوز pageController مقدار نگرفته بود، یک فریم صبر کن و دوباره
+      await Future<void>.delayed(const Duration(milliseconds: 16));
+      if (mounted) {
+        await _carouselController.animateToPage(page);
       }
-      _carouselController.animateToPage(_currentIndex);
-    });
+    }
   }
 
-  void _prevImage() {
-    setState(() {
-      if (_currentIndex > 0) {
-        _currentIndex--;
-      } else {
-        _currentIndex = widget.images.length - 1;
-      }
-      _carouselController.animateToPage(_currentIndex);
-    });
+  void _prevImage() async {
+    if (widget.images.isEmpty) return;
+    final prev = (_currentIndex - 1 + widget.images.length) % widget.images.length;
+    await _safeAnimateTo(prev);
+    if (mounted) setState(() => _currentIndex = prev);
   }
 
   @override
@@ -91,9 +107,7 @@ class StoryCarouselState extends State<StoryCarousel> {
               enableInfiniteScroll: true,
               autoPlay: false,
               onPageChanged: (index, reason) {
-                setState(() {
-                  _currentIndex = index;
-                });
+                if (mounted) setState(() => _currentIndex = index);
               },
             ),
             items: widget.images.map((imageUrl) {
@@ -182,3 +196,6 @@ class StoryCarouselState extends State<StoryCarousel> {
     );
   }
 }
+
+
+

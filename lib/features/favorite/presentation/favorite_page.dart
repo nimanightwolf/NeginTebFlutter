@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 
 import '../../home/presentation/widgets/product_list_section.dart';
 
-class FavoritePage extends StatelessWidget {
-  const FavoritePage({super.key});
+class ListBuyPage extends StatelessWidget {
+  const ListBuyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +47,7 @@ class FavoritePage extends StatelessWidget {
                 );
               },
             ),
-            Consumer<ProfileProvider>(
-              builder: (context, profileProvider, child) {
-                if (profileProvider.recentlyViewedProducts.isNotEmpty) {
-                  return ProductListSection(
-                      title: "بازدید های اخیر", product: profileProvider.recentlyViewedProducts);
-                } else {
-                  return SizedBox();
-                }
-              },
-            )
+
           ],
         ),
       ),

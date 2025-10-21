@@ -202,6 +202,9 @@ class ProductProvider with ChangeNotifier {
   List<Product> getProductsFromDatabase() {
     print("getProductsFromDatabase");
     print(_productBox.values.length);
+    if(_productBox.values.isEmpty){
+      fetchProducts();
+    }
     return _productBox.values.toList(); // دریافت تمام محصولات از Hive
   }
   Future<Product> getProductsFromDatabaseById(String id) async {

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:neginteb/features/home/presentation/provider/home_provider.dart';
 import 'package:neginteb/features/home/presentation/provider/product_provider.dart';
+import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
 import 'package:neginteb/features/home/presentation/widgets/ad_banner.dart';
 import 'package:neginteb/features/home/presentation/widgets/home_appbar.dart';
 import 'package:neginteb/features/home/presentation/widgets/hotel_vertical_list.dart';
@@ -59,6 +60,16 @@ class HomePage extends StatelessWidget {
                 return ProductVerticalList(title: "جدیدترین محصولات", product: productProvider.getPopularProductsFromDatabase());
               },
             ),
+            Consumer<ProfileProvider>(
+              builder: (context, profileProvider, child) {
+                if (profileProvider.recentlyViewedProducts.isNotEmpty) {
+                  return ProductListSection(
+                      title: "بازدید های اخیر", product: profileProvider.recentlyViewedProducts);
+                } else {
+                  return SizedBox();
+                }
+              },
+            )
           ],
         ),
       ),
