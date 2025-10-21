@@ -43,10 +43,10 @@ class _SplashPageState extends State<SplashPage> {
       Navigator.pushReplacementNamed(context, AppRoute.home);
     } else {
       Navigator.pushReplacementNamed(context, AppRoute.login);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => ProductListPage()), // هدایت به صفحه Home بعد از بارگذاری داده‌ها
-      );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => ProductListPage()), // هدایت به صفحه Home بعد از بارگذاری داده‌ها
+      // );
     }
   }
 

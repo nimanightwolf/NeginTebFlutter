@@ -49,7 +49,7 @@ Future<void> sendBuyRequest({
       ),
     );
 
-    Navigator.pop(context); // بستن CircularProgressIndicator
+ // بستن CircularProgressIndicator
 
     if (response.data is String) {
       String res = response.data.toString().trim();
@@ -59,6 +59,7 @@ Future<void> sendBuyRequest({
 
         if (res == "ok") {
           _showSnack(context, "✅ محصول با موفقیت به سبد اضافه شد");
+          Navigator.pop(context);
         } else if (res == "a") {
           _showSnack(context, "⚠️ موجودی کافی نیست، بعداً مجدد بررسی کنید");
         } else if (res == "not_enough") {

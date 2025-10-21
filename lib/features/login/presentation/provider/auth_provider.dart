@@ -39,17 +39,24 @@ class LoginProvider extends ChangeNotifier {
         'device_name': '',
         'device_model': '',
         'android_version': '',
-      },
-    );
+      });
+
 
     print(response.toString());
     if (response['success'] == true) {
+
+      final int userId = int.tryParse('${response['user_id']}') ?? 0;
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', response['token']);
-      await prefs.setString('user_id', response['user_id']);
+      await prefs.setInt('user_id', userId);
 
       final token = prefs.getString('token');
+
+
       print(token);
+      print(userId);
+      await ApiService.updateToken(token);
+      await ApiService.updateUserId(userId);
       Navigator.pushReplacementNamed(context, AppRoute.home);
       // رفتن به صفحه خانه
       // navigatorKey.currentState?.pushReplacementNamed(AppRoute.home);

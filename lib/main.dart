@@ -17,6 +17,7 @@ import 'package:neginteb/features/home/presentation/provider/profile_provider.da
 import 'package:neginteb/features/onboarding/data/repositories/onboarding_repository.dart';
 import 'package:neginteb/features/onboarding/presentation/onboarding_provider.dart';
 import 'package:neginteb/routes/app_route.dart';
+import 'package:neginteb/shared/services/api/api_service.dart';
 
 import 'package:neginteb/shared/services/json_data_service.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
@@ -39,7 +40,7 @@ void main() async {
   // باز کردن دیتابیس Hive
   final productProvider = ProductProvider();
   await productProvider.openDatabase();
-
+  await ApiService.init();
   //final dio = Dio();
   //final database = AppDatabase(NativeDatabase.memory());  // برای پایگاه داده در حافظه یا فایل
 
