@@ -60,7 +60,7 @@ class ProductCard extends StatelessWidget {
                     ),
                   ),
                   // اضافه کردن خط قرمز مورب و درصد تخفیف
-                  if (int.tryParse(product.offer) != null && int.parse(product.offer) == 0)
+                  if (int.tryParse(product.offer) != null && int.parse(product.offer) != 0)
                     Positioned(
                       top:33,
                       left: -25,
