@@ -13,6 +13,7 @@ import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/utils/price_formatter.dart';
 import '../../../shared/services/api/api_service.dart';
 import '../../../shared/services/api/sendBuyRequest.dart';
 import '../../home/presentation/provider/product_provider.dart';
@@ -128,14 +129,14 @@ class ProductDetailPage extends StatelessWidget {
                       ),
                       Center(
                         child: Text(
-                          " قیمت هر${hotel.unit}  ${hotel.priceVazn}ریال ",
+                          " قیمت هر${hotel.unit}  ${formatPrice(int.parse(hotel.priceVazn))}ریال ",
                           style: textTheme.headlineSmall,
                           textDirection: TextDirection.rtl,
                         ),
                       ),
                       Center(
                         child: Text(
-                          " قیمت هر${hotel.unit} در صورت پرداخت نقدی ${hotel.priceVazn}ریال ",
+                          " قیمت هر${hotel.unit} در صورت پرداخت نقدی ${formatPrice(int.parse(hotel.priceVazn))}ریال ",
                           style: textTheme.headlineSmall,
                           textDirection: TextDirection.rtl,
                         ),
@@ -407,7 +408,7 @@ class _PricingSectionState extends State<_PricingSection> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // مبلغ در سمت چپ
-            Text(' ${value} ریال',
+            Text(' ${formatPrice(int.parse(value))} ریال',
                 style: t.bodyMedium?.copyWith(
                   color: valueColor ?? Colors.black87,
                   fontWeight: FontWeight.w600,
