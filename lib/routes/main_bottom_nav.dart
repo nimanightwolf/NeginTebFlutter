@@ -24,29 +24,30 @@ class _MainButtomNavState extends State<MainButtomNav> {
   void initState() {
     super.initState();
 
-    _controller = PersistentTabController(initialIndex: 0);
+    _controller = PersistentTabController(initialIndex: 3);
   }
 
-  _buildScreens() {
-    return [HomePage(), ListBuyPage(),BookingPage(), ProfilePage()];
+  List<Widget> _buildScreens() {
+    return [ProfilePage(), ListBuyPage(),BookingPage(), HomePage()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
           icon: SvgPicture.asset(
-            "assets/images/nav_home.svg",
+            "assets/images/nav_profile.svg",
             width: 20,
             height: 20,
             colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
           activeColorPrimary: AppColors.primary,
           inactiveIcon: SvgPicture.asset(
-            "assets/images/nav_home.svg",
+            "assets/images/nav_profile.svg",
             width: 20,
             height: 20,
             colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
           )),
+
       PersistentBottomNavBarItem(
           icon: SvgPicture.asset(
             "assets/images/nav_shopping.svg",
@@ -77,14 +78,14 @@ class _MainButtomNavState extends State<MainButtomNav> {
           )),
       PersistentBottomNavBarItem(
           icon: SvgPicture.asset(
-            "assets/images/nav_profile.svg",
+            "assets/images/nav_home.svg",
             width: 20,
             height: 20,
             colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
           activeColorPrimary: AppColors.primary,
           inactiveIcon: SvgPicture.asset(
-            "assets/images/nav_profile.svg",
+            "assets/images/nav_home.svg",
             width: 20,
             height: 20,
             colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
@@ -98,6 +99,7 @@ class _MainButtomNavState extends State<MainButtomNav> {
       context,
       controller: _controller,
       screens: _buildScreens(),
+
       items: _navBarsItems(),
       onItemSelected: (index) {
         if (index != 2) {

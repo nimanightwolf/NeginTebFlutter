@@ -37,7 +37,7 @@ class BookingPageState extends State<BookingPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('فرم رزرو هتل', style: Theme.of(context).textTheme.headlineMedium),
+        title: Text('دسته بندی', style: Theme.of(context).textTheme.headlineMedium),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -169,7 +169,7 @@ class BookingPageState extends State<BookingPage> {
                               resetForm();
                             }
                           },
-                          child: Text("جستجو هتل ها"),
+                          child: Text("جستجو دارو ها"),
                         ),
                       ),
                     ],
