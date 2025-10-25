@@ -1,6 +1,6 @@
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
-class BookingModel {
+class CategoryModel {
   String fullName;
   String destination;
   JalaliRange? cehckInOutRangeDate;
@@ -8,7 +8,7 @@ class BookingModel {
   String numberOfGuests;
   String phoneNumber;
 
-  BookingModel(
+  CategoryModel(
       {this.fullName = '',
       this.destination = '',
       this.cehckInOutRangeDate,

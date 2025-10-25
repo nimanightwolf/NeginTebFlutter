@@ -27,6 +27,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'data/models/product.dart';
 import 'data/models/product_ids.dart';
+import 'features/booking/presentation/category_provider.dart';
 import 'features/home/presentation/provider/product_provider.dart';
 import 'features/login/presentation/provider/auth_provider.dart';
 
@@ -82,6 +83,7 @@ void main() async {
       // ChangeNotifierProvider(
       //   create: (_) => ProductProvider(productRepository: productRepository),
       // ),
+      ChangeNotifierProvider(create: (_) => CategoryProvider()..openDatabase()),
 
     ],
     child: const MyApp(),

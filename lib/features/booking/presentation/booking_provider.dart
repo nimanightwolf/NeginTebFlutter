@@ -3,8 +3,8 @@ import 'package:neginteb/features/booking/data/models/booking_model.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 class BookingProvider with ChangeNotifier {
-  final BookingModel _booking = BookingModel();
-  BookingModel get booking => _booking;
+  final CategoryModel _booking = CategoryModel();
+  CategoryModel get booking => _booking;
 
   void setName(String value) {
     _booking.fullName = value;
