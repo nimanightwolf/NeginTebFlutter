@@ -27,6 +27,7 @@ class ApiService {
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] =
           _useBearerPrefix ? 'Bearer $token' : token;
+          print(_useBearerPrefix);
         } else {
           options.headers.remove('Authorization');
         }
@@ -111,7 +112,7 @@ class ApiService {
       }
 
       // اگر هیچ‌کدام از این‌ها نباشد، آرایه خالی برمی‌گردانیم
-      return ['error:error'];
+      return ['error:$response'];
 
     } catch (e) {
       print('Request error: $e');

@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'category_model.g.dart';
 
-@HiveType(typeId: 1) // یکتا
+@HiveType(typeId: 6) // یکتا
 class CategoryModel extends HiveObject {
   @HiveField(0)
   String idcat;

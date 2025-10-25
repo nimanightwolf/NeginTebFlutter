@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:neginteb/core/constants/constants.dart';
 import 'package:neginteb/core/utils/keyboard.dart';
 import 'package:neginteb/features/booking/presentation/booking_page.dart';
+import 'package:neginteb/features/category/presentation/categories_page.dart';
 import 'package:neginteb/features/favorite/presentation/favorite_page.dart';
 import 'package:neginteb/features/home/presentation/homePage.dart';
 import 'package:neginteb/features/profile/presentation/profile_page.dart';
@@ -28,7 +29,7 @@ class _MainButtomNavState extends State<MainButtomNav> {
   }
 
   List<Widget> _buildScreens() {
-    return [ProfilePage(), ListBuyPage(),BookingPage(), HomePage()];
+    return [ProfilePage(), ListBuyPage(),CategoriesPage(), HomePage()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -102,10 +103,10 @@ class _MainButtomNavState extends State<MainButtomNav> {
 
       items: _navBarsItems(),
       onItemSelected: (index) {
-        if (index != 2) {
-          // reset form on booking page
-          BookingPage.bookingPageKey.currentState?.resetForm();
-        }
+        // if (index != 2) {
+        //   // reset form on booking page
+        //   BookingPage.bookingPageKey.currentState?.resetForm();
+        // }
 
         unfocusEditors(context);
       },

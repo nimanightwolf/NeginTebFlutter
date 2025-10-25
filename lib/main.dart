@@ -27,7 +27,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'data/models/product.dart';
 import 'data/models/product_ids.dart';
-import 'features/booking/presentation/category_provider.dart';
+import 'features/category/data/models/category_model.dart';
+import 'features/category/presentation/widgets/category_provider.dart';
 import 'features/home/presentation/provider/product_provider.dart';
 import 'features/login/presentation/provider/auth_provider.dart';
 
@@ -38,9 +39,12 @@ void main() async {
   // ثبت آداپتر برای مدل‌ها (برای Hive)
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(ProductIdsAdapter());
+  Hive.registerAdapter(CategoryModelAdapter());
   // باز کردن دیتابیس Hive
   final productProvider = ProductProvider();
+  final categoryProvider = CategoriesProvider();
   await productProvider.openDatabase();
+  await categoryProvider.openDatabase();
   await ApiService.init();
   //final dio = Dio();
   //final database = AppDatabase(NativeDatabase.memory());  // برای پایگاه داده در حافظه یا فایل
@@ -80,10 +84,10 @@ void main() async {
           create: (_) => FavotireItemProvider(hotelRepository)),
       ChangeNotifierProvider(create: (_) => LoginProvider()),
       ChangeNotifierProvider(create: (_) => productProvider),  // اضافه کردن ProductProvider
+      ChangeNotifierProvider(create: (_) => categoryProvider),  // اضافه کردن ProductProvider
       // ChangeNotifierProvider(
       //   create: (_) => ProductProvider(productRepository: productRepository),
       // ),
-      ChangeNotifierProvider(create: (_) => CategoryProvider()..openDatabase()),
 
     ],
     child: const MyApp(),
