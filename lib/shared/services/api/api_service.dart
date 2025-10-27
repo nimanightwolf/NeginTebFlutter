@@ -22,12 +22,10 @@ class ApiService {
   static Future<void> init() async {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        // Authorization header فقط
         final token = await _getToken();
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] =
           _useBearerPrefix ? 'Bearer $token' : token;
-          print(_useBearerPrefix);
         } else {
           options.headers.remove('Authorization');
         }
@@ -72,62 +70,102 @@ class ApiService {
     return _cachedUserId;
   }
 
-  // ————— helpers —————
+  // ---------------- helpers ----------------
+  static int? _asIntOrNull(dynamic v) {
+    if (v == null) return null;
+    if (v is int) return v;
+    if (v is String) return int.tryParse(v.trim());
+    if (v is num) return v.toInt();
+    return null;
+  }
+
+  /// تضمین می‌کند user_id داخل body وجود داشته باشد و نوعش int باشد.
+  /// اگر user_id ست نشده باشد، چیزی تزریق نمی‌شود.
   static Future<dynamic> _withUserIdInBody(dynamic data) async {
     final uid = await _getUserId();
-    if (uid == null || uid <= 0) return data ?? {'user_id': null};
-
-    if (data == null) return {'user_id': uid};
-
-    if (data is Map<String, dynamic>) {
-      return {...data, 'user_id': uid};
-    }
-    if (data is FormData) {
-      data.fields.removeWhere((f) => f.key == 'user_id');
-      data.fields.add(MapEntry('user_id', uid.toString()));
+    if (uid == null || uid <= 0) {
+      // user_id ست نشده → تزریق نکن
       return data;
     }
-    return data; // فرمت‌های دیگر را دست نمی‌زنیم
+
+    if (data == null) {
+      return <String, dynamic>{'user_id': uid};
+    }
+
+    // هر نوع Map را قبول کن (نه فقط Map<String, dynamic>)
+    if (data is Map) {
+      final map = Map<String, dynamic>.from(data as Map);
+      // اگر قبلاً وجود داشت به int تبدیل کن؛ وگرنه اضافه کن
+      map['user_id'] = _asIntOrNull(map['user_id']) ?? uid;
+      return map;
+    }
+
+    if (data is FormData) {
+      data.fields.removeWhere((f) => f.key == 'user_id');
+      data.fields.add(MapEntry('user_id', uid.toString())); // multipart → رشته
+      return data;
+    }
+
+    return data; // انواع دیگر دست‌نخورده
   }
 
-  // ————— public API —————
-  /// اگر [skipUserId] برابر true باشه، user_id به body تزریق نمی‌شه.
-  static Future<dynamic> post(String endpoint, {
-    dynamic data,
-    bool skipUserId = false,
-  }) async {
+  // ---------------- public API ----------------
+  /// اگر [skipUserId] = true باشد، user_id تزریق نمی‌شود.
+  // 2) post: حتماً از helper استفاده کن تا حتی data = {} هم پوشش داده شود
+  static Future<dynamic> post(
+      String endpoint, {
+        dynamic data,
+        bool skipUserId = false,
+        Options? options,
+      }) async {
     try {
-      final response = await _dio.post(endpoint, data: data);
-      print(response);
-      final decoded = jsonDecode(response.data);
+      final body = skipUserId ? data : await _withUserIdInBody(data);
 
-      // اگر پاسخ از نوع لیست باشد، آن را برمی‌گردانیم
-      if (decoded is List) {
-        return decoded;  // اگر داده‌ها یک لیست باشند، همان لیست را باز می‌گردانیم
-      }
+      print("data send"+body.toString());
 
-      // در غیر این صورت، فرض می‌کنیم که داده‌ها یک نقشه (Map) هستند
-      if (decoded is Map) {
-        return decoded;  // اگر داده‌ها یک نقشه باشند، همان نقشه را باز می‌گردانیم
-      }
+      final response = await _dio.post(
+        endpoint,
+        data: body,
+        options: options ?? Options(contentType: Headers.jsonContentType),
+      );
 
-      // اگر هیچ‌کدام از این‌ها نباشد، آرایه خالی برمی‌گردانیم
-      return ['error:$response'];
+      final dynamic payload = response.data is String
+          ? jsonDecode(response.data as String)
+          : response.data;
 
+      if (payload is List || payload is Map) return payload;
+      return [];
     } catch (e) {
-      print('Request error: $e');
-      return ['error:error'];
+      print('Request error (POST $endpoint): $e');
+      return [];
     }
   }
 
-  static Future<dynamic> get(String endpoint, {
-    Map<String, dynamic>? query,
-    bool skipUserId = true, // GET اصولاً body ندارد؛ پیش‌فرض: عدم تزریق
-  }) async {
+
+  static Future<dynamic> get(
+      String endpoint, {
+        Map<String, dynamic>? query,
+        bool skipUserId = true,
+        Options? options,
+      }) async {
     try {
-      final response = await _dio.get(endpoint, queryParameters: query);
-      final dynamic payload =
-      response.data is String ? jsonDecode(response.data as String) : response.data;
+      Map<String, dynamic>? qp = query;
+      if (!skipUserId) {
+        final uid = await _getUserId();
+        if (uid != null && uid > 0) {
+          qp = Map<String, dynamic>.from(query ?? const {});
+          // تضمین نوع int در کوئری
+          qp['user_id'] = uid;
+        }
+      }
+
+      final response =
+      await _dio.get(endpoint, queryParameters: qp, options: options);
+
+      final dynamic payload = response.data is String
+          ? jsonDecode(response.data as String)
+          : response.data;
+
       return (payload is List || payload is Map) ? payload : [];
     } catch (e) {
       print('Request error (GET $endpoint): $e');

@@ -30,12 +30,15 @@ import 'data/models/product_ids.dart';
 import 'features/category/data/models/category_model.dart';
 import 'features/category/presentation/widgets/category_provider.dart';
 import 'features/home/presentation/provider/product_provider.dart';
+import 'features/list_buy/presentation/widgets/cart_provider.dart';
 import 'features/login/presentation/provider/auth_provider.dart';
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 void main() async {
   //final appDatabase = AppDatabase();
   // راه‌اندازی Hive
   await Hive.initFlutter();
+
   // ثبت آداپتر برای مدل‌ها (برای Hive)
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(ProductIdsAdapter());
@@ -46,6 +49,8 @@ void main() async {
   await productProvider.openDatabase();
   await categoryProvider.openDatabase();
   await ApiService.init();
+
+
   //final dio = Dio();
   //final database = AppDatabase(NativeDatabase.memory());  // برای پایگاه داده در حافظه یا فایل
 
@@ -85,6 +90,8 @@ void main() async {
       ChangeNotifierProvider(create: (_) => LoginProvider()),
       ChangeNotifierProvider(create: (_) => productProvider),  // اضافه کردن ProductProvider
       ChangeNotifierProvider(create: (_) => categoryProvider),  // اضافه کردن ProductProvider
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+
       // ChangeNotifierProvider(
       //   create: (_) => ProductProvider(productRepository: productRepository),
       // ),
@@ -102,6 +109,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+
   @override
   void initState() {
     super.initState();
@@ -129,6 +137,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return Consumer<ThemeProvider>(
       builder: (context, themeModeProvider, child) {
         return MaterialApp(
+          navigatorObservers: [routeObserver],
           title: 'NeginTeb',
           locale: const Locale("fa", "IR"),
           supportedLocales: const [Locale("fa", "IR"), Locale("en", "US")],

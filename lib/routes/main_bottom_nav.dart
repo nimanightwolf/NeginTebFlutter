@@ -11,6 +11,8 @@ import 'package:neginteb/features/home/presentation/homePage.dart';
 import 'package:neginteb/features/profile/presentation/profile_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
+import '../features/list_buy/presentation/cart_page.dart';
+
 class MainButtomNav extends StatefulWidget {
   const MainButtomNav({super.key});
 
@@ -29,7 +31,7 @@ class _MainButtomNavState extends State<MainButtomNav> {
   }
 
   List<Widget> _buildScreens() {
-    return [ProfilePage(), ListBuyPage(),CategoriesPage(), HomePage()];
+    return [ProfilePage(), CartPage(),CategoriesPage(), HomePage()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -105,7 +107,7 @@ class _MainButtomNavState extends State<MainButtomNav> {
       onItemSelected: (index) {
         // if (index != 2) {
         //   // reset form on booking page
-        //   BookingPage.bookingPageKey.currentState?.resetForm();
+          BookingPage.bookingPageKey.currentState?.resetForm();
         // }
 
         unfocusEditors(context);
