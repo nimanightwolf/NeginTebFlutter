@@ -67,14 +67,14 @@ class _MainButtomNavState extends State<MainButtomNav> {
           )),
       PersistentBottomNavBarItem(
           icon: SvgPicture.asset(
-            "assets/images/nav_category.svg",
+            "assets/images/nav_category2.svg",
             width: 20,
             height: 20,
             colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
           activeColorPrimary: AppColors.primary,
           inactiveIcon: SvgPicture.asset(
-            "assets/images/nav_category.svg",
+            "assets/images/nav_category2.svg",
             width: 20,
             height: 20,
             colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),

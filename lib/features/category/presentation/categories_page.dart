@@ -1,9 +1,9 @@
 // categories_page.dart
 import 'package:flutter/material.dart';
-import 'package:neginteb/core/constants/constants.dart';
 import 'package:neginteb/features/category/presentation/widgets/category_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../home/presentation/pages/all_products_page.dart';
 import '../data/models/hexagon_clipper.dart';
 
 
@@ -69,6 +69,10 @@ class _CategoriesPageState extends State<CategoriesPage> {
 
                   // هدر وسط شبیه عکس (لوگو ساده + تیتر «همه محصولات»)
                   _AllProductsHeader(onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AllProductsPage()),
+                    );
                     // TODO: ناوبری به همه محصولات
                   }),
                   const SizedBox(height: 8),
@@ -97,8 +101,13 @@ class _CategoriesPageState extends State<CategoriesPage> {
                           image: c.image,
                           isNetwork: c.isNetwork,
                           onTap: () {
+
                             // TODO: رفتن به لیست محصولات این دسته با c.id
                             // Navigator.push(...);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => AllProductsPage(keyCategory:c.key_category,titleCategory:c.title)),
+                            );
                           },
                         );
                       },

@@ -5,6 +5,8 @@ import 'package:neginteb/core/theme/theme_provider.dart';
 import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../message/presentation/pages/messages_page.dart';
+
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key});
 
@@ -23,7 +25,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               Stack(
                 children: [
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const MessagesPage()));
+                      },
                       icon: Icon(
                         Icons.notifications_none,
                         color: Colors.grey,

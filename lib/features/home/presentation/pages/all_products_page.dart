@@ -12,8 +12,9 @@ import '../widgets/search_bar.dart';
 class AllProductsPage extends StatefulWidget {
   /// اگر ست شود، فقط محصولاتی که این کلید را دارند نمایش داده می‌شوند
   final String? keyCategory;
+  final String? titleCategory;
 
-  const AllProductsPage({super.key, this.keyCategory});
+  const AllProductsPage({super.key, this.keyCategory, this.titleCategory});
 
   @override
   State<AllProductsPage> createState() => _AllProductsPageState();
@@ -54,13 +55,13 @@ class _AllProductsPageState extends State<AllProductsPage> {
 
   List<Product> _applyFilters(List<Product> source) {
     // 1) فیلتر بر اساس key_category (اگر ست شده)
-    final keyCat = widget.keyCategory?.trim().toLowerCase();
+    final keyCat = widget.keyCategory?.trim();
     Iterable<Product> list = source;
 
     if (keyCat != null && keyCat.isNotEmpty) {
       list = list.where((p) {
         // پوشش هر دو فیلد احتمالی
-        final kc1 = (p.keyWord).toString().trim().toLowerCase();
+        final kc1 = (p.category).toString().trim().toLowerCase();
         // اگر فیلد دیگری مثل p.keyCategory داری، اضافه کن:
         // final kc2 = (p.keyCategory).toString().trim().toLowerCase();
         return kc1 == keyCat; // || kc2 == keyCat;
@@ -99,7 +100,7 @@ class _AllProductsPageState extends State<AllProductsPage> {
       appBar: AppBar(
         title: Text(widget.keyCategory == null
             ? 'همه محصولات'
-            : 'دسته: ${widget.keyCategory}'),
+            : 'دسته: ${widget.titleCategory}'),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(64),

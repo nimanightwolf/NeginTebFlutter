@@ -32,6 +32,7 @@ import 'features/category/presentation/widgets/category_provider.dart';
 import 'features/home/presentation/provider/product_provider.dart';
 import 'features/list_buy/presentation/widgets/cart_provider.dart';
 import 'features/login/presentation/provider/auth_provider.dart';
+import 'features/message/presentation/message_provider.dart';
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 void main() async {
@@ -91,6 +92,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => productProvider),  // اضافه کردن ProductProvider
       ChangeNotifierProvider(create: (_) => categoryProvider),  // اضافه کردن ProductProvider
         ChangeNotifierProvider(create: (_) => CartProvider()),
+      ChangeNotifierProvider(create: (_) => MessageProvider()),
 
       // ChangeNotifierProvider(
       //   create: (_) => ProductProvider(productRepository: productRepository),

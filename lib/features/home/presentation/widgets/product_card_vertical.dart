@@ -123,7 +123,7 @@ class ProductCardVertical extends StatelessWidget {
                           ? GeneratedChemicalImage.fromProduct(product, width: 120, height: double.infinity, fontSize: 8, lineSpacing: 4)
                           : (_notBlank(product.image1)
                           ? Image.network(networkUrl(product.image1), width: 120, height: double.infinity, fit: BoxFit.cover)
-                          : Image.asset('assets/images/ad_banner.png', width: 120, height: double.infinity, fit: BoxFit.cover)),
+                          : Image.asset('assets/images/no_img.png', width: 120, height: double.infinity, fit: BoxFit.cover)),
                     ),
 
                     // روبان افر غیرنقدی

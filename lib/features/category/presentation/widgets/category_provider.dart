@@ -11,14 +11,17 @@ import '../../../category/data/models/category_model.dart';
 class UiCategory {
   final String id;
   final String title;
+  final String key_category;
   final String image;   // asset یا url
   final bool isNetwork;
+
 
   UiCategory({
     required this.id,
     required this.title,
     required this.image,
     required this.isNetwork,
+    required this.key_category,
   });
 }
 
@@ -54,6 +57,7 @@ class CategoriesProvider with ChangeNotifier {
       title: c.title,
       image: imagePath,
       isNetwork: hasNetworkImage, // اگر از سرور بود → true
+      key_category: c.key_category
     );
   }
   /// کش‌کردن لیست آیدی‌های «محبوب/پیشنهادی/…» (اختیاری)
