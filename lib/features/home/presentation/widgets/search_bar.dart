@@ -1,25 +1,38 @@
 import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatelessWidget {
-  const SearchBarWidget({super.key});
+  final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onSearchTap;
+  final VoidCallback? onFilterTap;
+  final String hintText;
+
+  const SearchBarWidget({
+    super.key,
+    this.controller,
+    this.onChanged,
+    this.onSearchTap,
+    this.onFilterTap,
+    this.hintText = "جستجو در محصولات",
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Container(
         decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerLow, borderRadius: BorderRadius.circular(16)),
+          color: theme.colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(16),
+        ),
         child: Row(
           children: [
             IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.tune,
-                  color: theme.colorScheme.outline,
-                )),
+              onPressed: onFilterTap,
+              icon: Icon(Icons.tune, color: theme.colorScheme.outline),
+            ),
             SizedBox(
               height: 24,
               child: VerticalDivider(
@@ -28,25 +41,26 @@ class SearchBarWidget extends StatelessWidget {
                 width: 20,
               ),
             ),
-            const Expanded(
+            Expanded(
               child: TextField(
+                controller: controller,
                 textDirection: TextDirection.rtl,
+                onChanged: onChanged,
                 decoration: InputDecoration(
-                    filled: false,
-                    hintTextDirection: TextDirection.rtl,
-                    hintText: "جستجو در محصولات",
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12)),
+                  filled: false,
+                  hintTextDirection: TextDirection.rtl,
+                  hintText: hintText,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                ),
               ),
             ),
             IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.search,
-                  color: theme.colorScheme.outline,
-                ))
+              onPressed: onSearchTap,
+              icon: Icon(Icons.search, color: theme.colorScheme.outline),
+            ),
           ],
         ),
       ),

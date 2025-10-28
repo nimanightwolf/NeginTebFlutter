@@ -1,11 +1,17 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../data/models/product.dart';
-import '../provider/product_provider.dart';
-import '../widgets/product_card_vertical.dart';
+
+import 'package:neginteb/data/models/product.dart';
+import 'package:neginteb/features/home/presentation/provider/product_provider.dart';
+import 'package:neginteb/features/home/presentation/widgets/product_card_vertical.dart';
+
+import '../widgets/search_bar.dart';
 
 class AllProductsPage extends StatefulWidget {
-  final String? keyCategory; // فیلتر اختیاری برای دسته‌بندی خاص
+  /// اگر ست شود، فقط محصولاتی که این کلید را دارند نمایش داده می‌شوند
+  final String? keyCategory;
 
   const AllProductsPage({super.key, this.keyCategory});
 
@@ -14,173 +20,211 @@ class AllProductsPage extends StatefulWidget {
 }
 
 class _AllProductsPageState extends State<AllProductsPage> {
-  late ProductProvider _productProvider;
-  List<Product> _filteredProducts = [];
+  final _searchCtrl = TextEditingController();
+  String _query = '';
+  bool _firstBuildRefreshed = false;
 
   @override
   void initState() {
     super.initState();
+    // رفرش خودکار پس از ورود به صفحه (یک‌بار)
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _productProvider = context.read<ProductProvider>();
-
-      // اطمینان از باز بودن دیتابیس
-      await _productProvider.openDatabase();
-
-      final allProducts = _productProvider.getProductsFromDatabase();
-
-      setState(() {
-        _filteredProducts = _filterProducts(allProducts, widget.keyCategory);
-      });
-    });
-  }
-
-  List<Product> _filterProducts(List<Product> products, String? keyCategory) {
-    if (keyCategory == null || keyCategory.isEmpty) {
-      return products;
-    }
-    return products
-        .where((p) =>
-    p.category.toLowerCase() == keyCategory.toLowerCase() ||
-        p.categoryTitle.toLowerCase() == keyCategory.toLowerCase() ||
-        p.keyWord.toLowerCase().contains(keyCategory.toLowerCase()))
-        .toList();
-  }
-
-  Future<void> _refresh() async {
-    await _productProvider.fetchProducts();
-    final refreshed = _productProvider.getProductsFromDatabase();
-    setState(() {
-      _filteredProducts = _filterProducts(refreshed, widget.keyCategory);
+      if (mounted && !_firstBuildRefreshed) {
+        _firstBuildRefreshed = true;
+        await _refreshFromServer();
+      }
     });
   }
 
   @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refreshFromServer() async {
+    final provider = context.read<ProductProvider>();
+    try {
+      await provider.fetchProducts(); // از سرور می‌گیرد و داخل Hive ذخیره می‌کند
+      // بعد از fetch نیاز به setState نیست چون Provider notify می‌دهد
+    } catch (_) {
+      // هندل خطا درون provider انجام شده. اگر خواستی SnackBar اضافه کن.
+    }
+  }
+
+  List<Product> _applyFilters(List<Product> source) {
+    // 1) فیلتر بر اساس key_category (اگر ست شده)
+    final keyCat = widget.keyCategory?.trim().toLowerCase();
+    Iterable<Product> list = source;
+
+    if (keyCat != null && keyCat.isNotEmpty) {
+      list = list.where((p) {
+        // پوشش هر دو فیلد احتمالی
+        final kc1 = (p.keyWord).toString().trim().toLowerCase();
+        // اگر فیلد دیگری مثل p.keyCategory داری، اضافه کن:
+        // final kc2 = (p.keyCategory).toString().trim().toLowerCase();
+        return kc1 == keyCat; // || kc2 == keyCat;
+      });
+    }
+
+    // 2) فیلتر سرچ
+    final q = _query.trim().toLowerCase();
+    if (q.isNotEmpty) {
+      list = list.where((p) {
+        bool hit(String? s) =>
+            s != null && s.toLowerCase().contains(q);
+        return hit(p.title) ||
+            hit(p.nameLatin) ||
+            hit(p.keyWord) ||
+            hit(p.category) ||
+            hit(p.country);
+      });
+    }
+
+    // 3) می‌تونی سورت هم اعمال کنی (دلخواه)
+    final out = list.toList();
+    // نمونه: جدیدترین‌ها ابتدا (اگر فیلد date یا sort داری)
+    // out.sort((a, b) => (b.sort).compareTo(a.sort));
+    return out;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isLoading = context.watch<ProductProvider>().isLoading;
+    final provider = context.watch<ProductProvider>();
+    // همیشه از دیتابیس بخون؛ اگر خالی بود provider خودش fetch می‌کند (طبق کدی که قبلاً ساختیم)
+    final all = provider.getProductsFromDatabase();
+    final filtered = _applyFilters(all);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.keyCategory == null
-              ? 'همه محصولات'
-              : 'محصولات دسته ${widget.keyCategory}',
-          textDirection: TextDirection.rtl,
-        ),
+        title: Text(widget.keyCategory == null
+            ? 'همه محصولات'
+            : 'دسته: ${widget.keyCategory}'),
         centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(64),
+          child: SearchBarWidget(
+            controller: _searchCtrl,
+            onChanged: (q) => setState(() => _query = q),
+            onSearchTap: () {
+              setState(() => _query = _searchCtrl.text);
+              FocusScope.of(context).unfocus();
+            },
+            onFilterTap: () {
+              // اگر فیلترهای پیشرفته داری، اینجا BottomSheet باز کن
+              // showModalBottomSheet(context: context, builder: (_) => YourFilterSheet());
+            },
+          ),
+        ),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-        onRefresh: _refresh,
-        child: _filteredProducts.isEmpty
-            ? const Center(
-          child: Text(
-            'محصولی یافت نشد',
-            style: TextStyle(fontSize: 16),
-          ),
-        )
-            : GridView.builder(
-          padding: const EdgeInsets.all(2),
-          gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1,
-            childAspectRatio: 2.9,
-            crossAxisSpacing: 2,
-            mainAxisSpacing: 2,
-          ),
-          itemCount: _filteredProducts.length,
-          itemBuilder: (context, index) {
-            final product = _filteredProducts[index];
-             return ProductCardVertical(product: product);
 
-          },
+      body: RefreshIndicator(
+        onRefresh: _refreshFromServer,
+        child: CustomScrollView(
+          slivers: [
+            // شمارش آیتم‌ها
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  children: [
+                    Icon(Icons.inventory_2_outlined, size: 18, color: Theme.of(context).colorScheme.primary),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${filtered.length} کالا',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textDirection: TextDirection.rtl,
+                    ),
+                    const Spacer(),
+                    if (provider.isLoading) ...[
+                      SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      const SizedBox(width: 8),
+                      Text('در حال بروز‌رسانی...', style: Theme.of(context).textTheme.bodySmall),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+
+            if (filtered.isEmpty)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: _EmptyState(
+                  title: _query.isEmpty
+                      ? 'محصولی برای این دسته موجود نیست'
+                      : 'چیزی مطابق جستجو پیدا نشد',
+                  subtitle: _query.isEmpty
+                      ? 'با کشیدن صفحه به پایین، لیست را بروز کنید.'
+                      : 'عبارت جستجو را تغییر بده یا پاک کن.',
+                  onClear: _query.isNotEmpty ? () {
+                    setState(() {
+                      _query = '';
+                      _searchCtrl.clear();
+                    });
+                  } : null,
+                ),
+              )
+            else
+            // لیست کارت‌ها
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                sliver: SliverList.builder(
+                  itemCount: filtered.length,
+                  itemBuilder: (context, index) {
+                    final p = filtered[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: ProductCardVertical(product: p),
+                    );
+                  },
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _ProductCard extends StatelessWidget {
-  final Product product;
-  const _ProductCard({required this.product});
+class _EmptyState extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final VoidCallback? onClear;
+
+  const _EmptyState({
+    required this.title,
+    this.subtitle,
+    this.onClear,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // TODO: برو به صفحه جزئیات محصول
-        // Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailPage(productId: product.id)));
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+    final t = Theme.of(context).textTheme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // تصویر
-            Expanded(
-              child: ClipRRect(
-                borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(18)),
-                child: product.image1.isNotEmpty
-                    ? Image.network(
-                  product.image1,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  errorBuilder: (_, __, ___) => const Icon(
-                    Icons.image_not_supported_outlined,
-                    size: 48,
-                    color: Colors.grey,
-                  ),
-                )
-                    : Container(
-                  color: Colors.grey.shade200,
-                  child: const Center(
-                    child: Icon(
-                      Icons.image_outlined,
-                      size: 48,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
+            Icon(Icons.search_off, size: 64, color: Theme.of(context).colorScheme.outline),
+            const SizedBox(height: 12),
+            Text(title, style: t.titleMedium, textAlign: TextAlign.center),
+            if (subtitle != null) ...[
+              const SizedBox(height: 6),
+              Text(subtitle!, style: t.bodySmall, textAlign: TextAlign.center),
+            ],
+            if (onClear != null) ...[
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: onClear,
+                icon: Icon(Icons.clear),
+                label: Text('پاک کردن جستجو'),
               ),
-            ),
-            // عنوان و قیمت
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                product.title,
-                textDirection: TextDirection.rtl,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style:
-                const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-              ),
-            ),
-            Padding(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              child: Text(
-                product.price.isNotEmpty
-                    ? '${product.price} ریال'
-                    : 'قیمت ندارد',
-                textDirection: TextDirection.rtl,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green.shade700,
-                ),
-              ),
-            ),
+            ],
           ],
         ),
       ),
