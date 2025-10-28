@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -24,16 +22,18 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-
 import 'data/models/product.dart';
 import 'data/models/product_ids.dart';
 import 'features/category/data/models/category_model.dart';
 import 'features/category/presentation/widgets/category_provider.dart';
+import 'features/history/presentation/history_provider.dart';
 import 'features/home/presentation/provider/product_provider.dart';
 import 'features/list_buy/presentation/widgets/cart_provider.dart';
 import 'features/login/presentation/provider/auth_provider.dart';
 import 'features/message/presentation/message_provider.dart';
-final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
 
 void main() async {
   //final appDatabase = AppDatabase();
@@ -51,7 +51,6 @@ void main() async {
   await categoryProvider.openDatabase();
   await ApiService.init();
 
-
   //final dio = Dio();
   //final database = AppDatabase(NativeDatabase.memory());  // برای پایگاه داده در حافظه یا فایل
 
@@ -65,7 +64,7 @@ void main() async {
   // دریافت داده‌ها از دیتابیس
   // final allProducts = await database.select(database.products).get();
   // print(allProducts);
- // final productRepository = ProductRepository(dio: dio, database: appDatabase);
+  // final productRepository = ProductRepository(dio: dio, database: appDatabase);
 
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
@@ -89,15 +88,17 @@ void main() async {
       ChangeNotifierProvider(
           create: (_) => FavotireItemProvider(hotelRepository)),
       ChangeNotifierProvider(create: (_) => LoginProvider()),
-      ChangeNotifierProvider(create: (_) => productProvider),  // اضافه کردن ProductProvider
-      ChangeNotifierProvider(create: (_) => categoryProvider),  // اضافه کردن ProductProvider
-        ChangeNotifierProvider(create: (_) => CartProvider()),
+      ChangeNotifierProvider(create: (_) => productProvider),
+      // اضافه کردن ProductProvider
+      ChangeNotifierProvider(create: (_) => categoryProvider),
+      // اضافه کردن ProductProvider
+      ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => MessageProvider()),
+      ChangeNotifierProvider(create: (_) => HistoryProvider())
 
       // ChangeNotifierProvider(
       //   create: (_) => ProductProvider(productRepository: productRepository),
       // ),
-
     ],
     child: const MyApp(),
   ));
@@ -111,7 +112,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-
   @override
   void initState() {
     super.initState();

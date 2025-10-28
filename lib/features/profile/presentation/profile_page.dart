@@ -1,11 +1,14 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
+import 'package:neginteb/features/history/history_page.dart';
 import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
 import 'package:neginteb/features/profile/presentation/widgets/profile_option_item.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../history/presentation/history_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -78,7 +81,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             padding: EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primaryFixed, shape: BoxShape.circle),
+                                color:
+                                    Theme.of(context).colorScheme.primaryFixed,
+                                shape: BoxShape.circle),
                             child: Icon(
                               Icons.edit,
                               size: 18,
@@ -100,7 +105,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 Text(
                   profile.email,
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.grey),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall!
+                      .copyWith(color: Colors.grey),
                 ),
                 SizedBox(
                   height: 24,
@@ -108,7 +116,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 ProfileOptionItem(
                   title: "اطلاعات صفحه کاربری",
                   icon: Icons.person_outline,
-                  onTap: () => _showSnackbar(context, "مشاهده اطلاعات صفحه کاربری"),
+                  onTap: () =>
+                      _showSnackbar(context, "مشاهده اطلاعات صفحه کاربری"),
                 ),
                 ProfileOptionItem(
                   title: "اعلان ها",
@@ -116,14 +125,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () => _showSnackbar(context, "مشاهده اعلان‌ها"),
                 ),
                 ProfileOptionItem(
-                  title: "لیست مورد علاقه ها",
+                  title: "تاریخچه خرید",
                   icon: Icons.favorite_outline,
-                  onTap: () => _showSnackbar(context, "مشاهده لیست علاقه‌مندی‌ها"),
+                  onTap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const HistoryPage())),
                 ),
                 ProfileOptionItem(
                   title: "فراموشی رمز عبور",
                   icon: Icons.key_outlined,
-                  onTap: () => _showSnackbar(context, "تغییر یا بازیابی رمز عبور"),
+                  onTap: () =>
+                      _showSnackbar(context, "تغییر یا بازیابی رمز عبور"),
                 ),
                 ProfileOptionItem(
                   title: "روش های پرداخت",
