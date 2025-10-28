@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:neginteb/data/models/product.dart';
 
-import 'hotel_card_vertical.dart';
+import 'product_card_vertical.dart';
 
 class ProductVerticalList extends StatelessWidget {
   final String title;

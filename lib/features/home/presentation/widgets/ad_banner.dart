@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../pages/all_products_page.dart';
+
 class AdBanner extends StatelessWidget {
   const AdBanner({super.key});
 
@@ -40,7 +42,12 @@ class AdBanner extends StatelessWidget {
                   height: 8,
                 ),
                 ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AllProductsPage()),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: Colors.brown.shade800,

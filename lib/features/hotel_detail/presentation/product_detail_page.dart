@@ -1,116 +1,91 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:neginteb/core/utils/network.dart';
+import 'package:neginteb/core/utils/price_formatter.dart';
 import 'package:neginteb/data/models/product.dart';
-
 import 'package:neginteb/features/hotel_detail/presentation/full_screen_image_shower.dart';
-
+import 'package:neginteb/features/hotel_detail/presentation/full_screen_generated_image.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:neginteb/shared/services/api/api_service.dart';
+import 'package:neginteb/features/home/presentation/provider/product_provider.dart';
+import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
 
-import '../../../core/utils/price_formatter.dart';
-import '../../../shared/services/api/api_service.dart';
-import '../../../shared/services/api/sendBuyRequest.dart';
-import '../../home/presentation/provider/product_provider.dart';
-import '../../home/presentation/provider/profile_provider.dart';
+import '../../../shared/widgets/generated_chemical_image.dart';
 
+// ========== صفحه دیتیل ==========
 class ProductDetailPage extends StatelessWidget {
-  const ProductDetailPage({super.key, required this.hotelId});
-
   final String hotelId;
+  const ProductDetailPage({super.key, required this.hotelId});
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProductProvider>(context);
-    // final hotelRepository = HotelRepository(jsonDataService: JsonDataService());
+    final provider = context.read<ProductProvider>();
     final textTheme = Theme.of(context).textTheme;
 
     return FutureBuilder<Product>(
       future: provider.getProductsFromDatabaseById(hotelId),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
 
-        final hotel = snapshot.data!;
-        final List<double> packings = packingsFromString(hotel.packing);
-        final images = [
-          hotel.image1,
-          hotel.image2,
-          hotel.image3,
+        final product = snapshot.data!;
+        final images = <String>[
+          if (GeneratedChemicalImage.shouldUse(product)) '__generated__',
+          product.image1, product.image2, product.image3,
         ].where((e) => e != null && e.trim().isNotEmpty).toList();
-// آیتم‌های اطلاعاتی (فقط مقدار را از مدل خودت بگذار)
-        final _rawInfoItems = [
-          {
-            'label': 'نام لاتین',
-            'value': hotel.nameLatin,
-            'icon': Icons.science_outlined,
-            'ltr': true, // متن لاتین LTR
-          },
-          {
-            'label': 'گروه بندی',
-            'value': hotel.categoryTitle,
-            'icon': Icons.category_outlined,
-            'ltr': false,
-          },
-          {
-            'label': 'تاریخ انقضا',
-            'value': hotel.dateEx, // مثل 04.2026
-            'icon': Icons.calendar_month_outlined,
-            'ltr': true, // تاریخ نقطه‌دار بهتره LTR باشه
-          },
-          {
-            'label': 'کشور سازنده',
-            'value': hotel.country, // مثل 04.2026
-            'icon': Icons.location_on_outlined,
-            'ltr': true, // تاریخ نقطه‌دار بهتره LTR باشه
-          },
-        ];
 
-// فقط موارد پُر را نگه می‌داریم
-        final _visibleInfoItems = _rawInfoItems
-            .where((m) => !_isBlank(m['value'] as String?))
-            .toList();
+        final infoRaw = [
+          {'label': 'نام لاتین', 'value': product.nameLatin, 'icon': Icons.science_outlined, 'ltr': true},
+          {'label': 'گروه بندی', 'value': product.categoryTitle, 'icon': Icons.category_outlined, 'ltr': false},
+          {'label': 'تاریخ انقضا', 'value': product.dateEx, 'icon': Icons.calendar_month_outlined, 'ltr': true},
+          {'label': 'کشور سازنده', 'value': product.country, 'icon': Icons.location_on_outlined, 'ltr': true},
+        ];
+        final infoItems = infoRaw.where((m) => !_isBlank(m['value'] as String?)).toList();
+
+        // ثبت مشاهده اخیر و لود محصولات پروفایل
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          context.read<ProfileProvider>().addRecentlyViewed(product.id);
+          context.read<ProfileProvider>().loadProfileProducts(context);
+        });
+
         return Scaffold(
           body: CustomScrollView(
             slivers: [
               SliverAppBar(
                 floating: true,
                 pinned: false,
+                expandedHeight: 300,
+                elevation: 8,
+                leading: IconButton(
+                  onPressed: () => PersistentNavBarNavigator.pop(context),
+                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                ),
                 flexibleSpace: FlexibleSpaceBar(
-                  background: GestureDetector(
+                  background: GeneratedChemicalImage.shouldUse(product)
+                      ? GeneratedChemicalImage.fromProduct(
+                    product,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fontSize: 16,   // بزرگ‌تر برای هدر
+                    lineSpacing: 6,
+                  )
+                      : GestureDetector(
                     onLongPress: () {
-                      PersistentNavBarNavigator.pushNewScreen(context,
-                          screen:
-                              FullScreenImageShower(myImageUrl: hotel.image1),
-                          withNavBar: false,
-                          pageTransitionAnimation:
-                              PageTransitionAnimation.cupertino);
+                      PersistentNavBarNavigator.pushNewScreen(
+                        context,
+                        screen: FullScreenImageShower(myImageUrl: product.image1),
+                        withNavBar: false,
+                        pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                      );
                     },
-                    child: Image.network(
-                        fit: BoxFit.cover, networkUrl(hotel.image1)),
+                    child: Image.network(networkUrl(product.image1), fit: BoxFit.cover),
                   ),
                 ),
-                elevation: 8,
-                expandedHeight: 300,
-                leading: IconButton(
-                    onPressed: () {
-                      PersistentNavBarNavigator.pop(context);
-                    },
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                    )),
               ),
+
               SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -118,47 +93,23 @@ class ProductDetailPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Center(
-                        child: Text(
-                          hotel.title,
-                          style: textTheme.headlineMedium,
-                          textDirection: TextDirection.rtl,
-                        ),
+                        child: Text(product.title, style: textTheme.headlineMedium, textDirection: TextDirection.rtl),
                       ),
-                      SizedBox(
-                        height: 12,
-                      ),
+                      SizedBox(height: 12),
                       Center(
                         child: Text(
-                          " قیمت هر${hotel.unit}  ${formatPrice(int.parse(hotel.priceVazn))}ریال ",
+                          "قیمت هر ${product.unit} ${formatPrice(int.tryParse(product.priceVazn) ?? 0)} ریال",
                           style: textTheme.headlineSmall,
                           textDirection: TextDirection.rtl,
                         ),
                       ),
-                      Center(
-                        child: Text(
-                          " قیمت هر${hotel.unit} در صورت پرداخت نقدی ${formatPrice(int.parse(hotel.priceVazn))}ریال ",
-                          style: textTheme.headlineSmall,
-                          textDirection: TextDirection.rtl,
-                        ),
-                      ),
-                      Container(
-                        height: 1, // ضخامت خط
-                        color: Colors.black, // رنگ خط
-                        margin: EdgeInsets.symmetric(
-                            vertical: 8), // فاصله بالا و پایین
-                      ),
+                      SizedBox(height: 16),
+                      Divider(color: Colors.black, height: 1),
 
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Text(
-                        "گالری تصاویر",
-                        style: textTheme.headlineSmall,
-                        textDirection: TextDirection.rtl,
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
+                      // گالری
+                      SizedBox(height: 16),
+                      Text("گالری تصاویر", style: textTheme.headlineSmall, textDirection: TextDirection.rtl),
+                      SizedBox(height: 8),
                       SizedBox(
                         height: 100,
                         child: ListView.builder(
@@ -167,17 +118,41 @@ class ProductDetailPage extends StatelessWidget {
                           itemCount: images.length,
                           itemBuilder: (context, index) {
                             final img = images[index];
+                            if (img == '__generated__') {
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 12),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    PersistentNavBarNavigator.pushNewScreen(
+                                      context,
+                                      screen: FullScreenGeneratedImage(product: product),
+                                      withNavBar: false,
+                                      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                                    );
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: GeneratedChemicalImage.fromProduct(
+                                      product,
+                                      width: 140,
+                                      height: 120,
+                                      fontSize: 4, // مناسب thumbnail
+                                      lineSpacing: 1,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+
                             return Row(
                               children: [
                                 GestureDetector(
                                   onTap: () {
                                     PersistentNavBarNavigator.pushNewScreen(
                                       context,
-                                      screen: FullScreenImageShower(
-                                          myImageUrl: img),
+                                      screen: FullScreenImageShower(myImageUrl: img),
                                       withNavBar: false,
-                                      pageTransitionAnimation:
-                                          PageTransitionAnimation.cupertino,
+                                      pageTransitionAnimation: PageTransitionAnimation.cupertino,
                                     );
                                   },
                                   child: Padding(
@@ -193,134 +168,56 @@ class ProductDetailPage extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                if (index != images.length - 1)
-                                  const SizedBox(width: 8),
+                                if (index != images.length - 1) const SizedBox(width: 8),
                               ],
                             );
                           },
                         ),
                       ),
+
                       const SizedBox(height: 16),
 
-                      if (_visibleInfoItems.isNotEmpty)
+                      if (infoItems.isNotEmpty)
                         Container(
                           margin: const EdgeInsets.only(top: 16),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                           decoration: const BoxDecoration(
                             border: Border(
-                              top: BorderSide(
-                                  color: Color(0xFF2E7D32), width: 2),
-                              bottom: BorderSide(
-                                  color: Color(0xFF2E7D32), width: 2),
+                              top: BorderSide(color: Color(0xFF2E7D32), width: 2),
+                              bottom: BorderSide(color: Color(0xFF2E7D32), width: 2),
                             ),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              for (var i = 0;
-                                  i < _visibleInfoItems.length;
-                                  i++) ...[
+                              for (var i = 0; i < infoItems.length; i++) ...[
                                 _InfoRow(
-                                  label:
-                                      _visibleInfoItems[i]['label'] as String,
-                                  value:
-                                      (_visibleInfoItems[i]['value'] as String)
-                                          .trim(),
-                                  icon:
-                                      _visibleInfoItems[i]['icon'] as IconData,
+                                  label: infoItems[i]['label'] as String,
+                                  value: (infoItems[i]['value'] as String).trim(),
+                                  icon: infoItems[i]['icon'] as IconData,
                                   textTheme: textTheme,
-                                  valueIsLTR:
-                                      (_visibleInfoItems[i]['ltr'] as bool?) ??
-                                          false,
+                                  valueIsLTR: (infoItems[i]['ltr'] as bool?) ?? false,
                                   iconColor: const Color(0xFF2E7D32),
                                 ),
-                                if (i != _visibleInfoItems.length - 1)
-                                  const SizedBox(height: 16),
+                                if (i != infoItems.length - 1) const SizedBox(height: 16),
                               ],
                             ],
                           ),
                         ),
 
-                      SizedBox(
-                        height: 16,
-                      ),
+                      SizedBox(height: 16),
+                      Text("توضیحات", style: textTheme.headlineSmall, textDirection: TextDirection.rtl),
+                      SizedBox(height: 8),
                       Text(
-                        "توضیحات",
-                        style: textTheme.headlineSmall,
-                        textDirection: TextDirection.rtl,
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        hotel.description,
+                        product.description,
                         style: textTheme.bodyMedium!.copyWith(height: 1.5),
                         textDirection: TextDirection.rtl,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 8,
                       ),
-                      _PricingSection(hotel: hotel),
 
-                      SizedBox(
-                        height: 8,
-                      ),
-                      // ClipRRect(
-                      //   borderRadius: BorderRadius.circular(12),
-                      //   child: SizedBox(
-                      //     width: double.infinity,
-                      //     height: 200,
-                      //     child: FlutterMap(
-                      //       options: MapOptions(
-                      //         initialZoom: 15.0,
-                      //         // initialCenter: LatLng(hotel.location.latitude, hotel.location.longitude),
-                      //         interactionOptions: InteractionOptions(
-                      //           flags: InteractiveFlag.all &
-                      //               ~InteractiveFlag.rotate,
-                      //         ),
-                      //       ),
-                      //       children: [
-                      //         TileLayer(
-                      //           urlTemplate:
-                      //               'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      //           userAgentPackageName: 'ir.dunijet.neginteb',
-                      //         ),
-                      //         MarkerLayer(
-                      //           markers: [
-                      //             // Marker(
-                      //             //     point: LatLng(hotel.location.latitude, hotel.location.longitude),
-                      //             //     width: 80,
-                      //             //     height: 80,
-                      //             //     child: Column(
-                      //             //       children: [
-                      //             //         Icon(
-                      //             //           Icons.location_pin,
-                      //             //           color: Colors.red,
-                      //             //           size: 40,
-                      //             //         ),
-                      //             //         Container(
-                      //             //           padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      //             //           color: Colors.white.withOpacity(0.8),
-                      //             //           child: Text(
-                      //             //             hotel.name,
-                      //             //             style: textTheme.bodySmall!.copyWith(color: Colors.black),
-                      //             //             textDirection: TextDirection.rtl,
-                      //             //             textAlign: TextAlign.center,
-                      //             //             maxLines: 1,
-                      //             //             overflow: TextOverflow.ellipsis,
-                      //             //           ),
-                      //             //
-                      //             //       ],
-                      //             //     )),
-                      //           ],
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      SizedBox(
-                        height: 0,
-                      ),
+                      // بخش محاسبه قیمت/بسته/تعداد/افزودن به سبد
+                      _PricingSection(hotel: product),
                     ],
                   ),
                 ),
@@ -333,413 +230,7 @@ class ProductDetailPage extends StatelessWidget {
   }
 }
 
-enum PaymentType { nonCash, cashWithOffer }
-
-class _PricingSection extends StatefulWidget {
-  final Product hotel;
-
-  const _PricingSection({required this.hotel});
-
-  @override
-  State<_PricingSection> createState() => _PricingSectionState();
-}
-
-class _PricingSectionState extends State<_PricingSection> {
-  // لیست گزینه‌های بسته‌بندی (گرم) — اگر در مدل داری، جایگزین کن
-
-  late double selectedPacking; // گرم
-  int qty = 1;
-  PaymentType paymentType = PaymentType.nonCash;
-
-  @override
-  void initState() {
-    super.initState();
-    final packs = packingsFromString(widget.hotel.packing);
-    selectedPacking = packs.first; // مثلاً 60
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProfileProvider>().addRecentlyViewed(widget.hotel.id);
-      context.read<ProfileProvider>().loadProfileProducts(context);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final t = Theme.of(context).textTheme;
-
-    // ===== داده‌های محصول =====
-    // قیمت به ازای هر "گرم" (یا واحد پایه). اگر اسم فیلد متفاوته، اینجا عوضش کن.
-    final double pricePerGram = asDouble(widget.hotel.priceVazn ?? 0);
-    final List<double> packings = packingsFromString(widget.hotel.packing);
-    // درصد افر مطابق منطق جاوا:
-    // if (str_naghde_or_ade == "0") => offer
-    // else => offer_two
-    final double offerPercent = paymentType == PaymentType.nonCash
-        ? asDouble(widget.hotel.offer ?? 0)
-        : asDouble(widget.hotel.offerTwo ?? 0);
-
-    // ===== محاسبات =====
-    // قیمت هر بسته انتخاب‌شده (یک عدد بسته)
-    final double pricePerSelectedPack = pricePerGram * selectedPacking;
-
-    // قیمت کل (قیمت هر بسته × تعداد)
-    final double priceAll = pricePerSelectedPack * qty;
-
-    // مبلغ افر (price_all * offer / 100)
-    final int priceOfferAccrued = (priceAll * offerPercent / 100).round();
-
-    // مبلغ قابل پرداخت با کسر افر
-    final int priceAllWithOffer = (priceAll - priceOfferAccrued).round();
-    print("hhhh" + widget.hotel.packing.toString());
-    Widget line() => Container(
-          height: 2,
-          color: const Color(0xFF2E7D32),
-          margin: const EdgeInsets.symmetric(vertical: 10),
-        );
-
-    Widget rowPrice({
-      required String label,
-      required String value,
-      Color? valueColor,
-      TextStyle? labelStyle,
-    }) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // مبلغ در سمت چپ
-            Text(' ${formatPrice(int.parse(value))} ریال',
-                style: t.bodyMedium?.copyWith(
-                  color: valueColor ?? Colors.black87,
-                  fontWeight: FontWeight.w600,
-                ),
-                textDirection: TextDirection.rtl),
-            // برچسب در سمت راست
-            Text(
-              label,
-              style: labelStyle ?? t.titleMedium,
-              textDirection: TextDirection.rtl,
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          line(),
-          rowPrice(
-            label: 'قیمت هر بسته انتخاب شده',
-            value: pricePerSelectedPack.round().toString(),
-            valueColor: Colors.lightBlue,
-          ),
-          rowPrice(
-            label: 'قیمت هر بسته انتخاب‌شده ضرب در تعداد',
-            value: priceAll.round().toString(),
-            valueColor: Colors.lightBlue,
-            labelStyle: t.bodyMedium,
-          ),
-          rowPrice(
-            label: 'مبلغ افر شما',
-            value: (priceOfferAccrued).toString(),
-            valueColor: Colors.red,
-          ),
-          rowPrice(
-            label: 'مبلغ قابل پرداخت با کسر افر',
-            value: (priceAllWithOffer).toString(),
-            valueColor: Colors.red,
-          ),
-          line(),
-
-          // انتخاب بسته‌بندی
-          Center(
-            child: Text('انتخاب بسته بندی',
-                style: t.headlineSmall, textDirection: TextDirection.rtl),
-          ),
-          const SizedBox(height: 12),
-
-          // Dropdown بسته (گرم)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('گرمی',
-                  style: t.titleMedium, textDirection: TextDirection.rtl),
-              const SizedBox(width: 12),
-              DropdownButton<double>(
-                value: selectedPacking,
-                items: packings
-                    .map((g) => DropdownMenuItem(
-                          value: g,
-                          child: Text(g.toStringAsFixed(g % 1 == 0 ? 0 : 2),
-                              textDirection: TextDirection.ltr),
-                        ))
-                    .toList(),
-                onChanged: (v) => setState(() => selectedPacking = v!),
-              ),
-              const SizedBox(width: 12),
-              Text('بسته‌ی',
-                  style: t.titleMedium, textDirection: TextDirection.rtl),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          // تعداد
-          Center(
-              child: Text('تعداد',
-                  style: t.headlineSmall, textDirection: TextDirection.rtl)),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // منفی
-              InkWell(
-                onTap: () => setState(() => qty = qty > 1 ? qty - 1 : 1),
-                child: Container(
-                  width: 64,
-                  height: 48,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black12, blurRadius: 4)
-                    ],
-                  ),
-                  child: const Icon(Icons.remove, size: 28, color: Colors.red),
-                ),
-              ),
-              const SizedBox(width: 24),
-              Text('$qty', style: t.headlineMedium),
-              const SizedBox(width: 24),
-              // مثبت
-              InkWell(
-                onTap: () {
-                  final available = checkMojodePack(
-                    packingJson: widget.hotel.packing,
-                    selectedPacking: selectedPacking,
-                  );
-
-                  if (available <= 0) {
-                    _showSnack(context, 'موجودی این بسته صفر است');
-                    return;
-                  }
-
-                  if (qty < available) {
-                    setState(() => qty++);
-                  } else {
-                    _showSnack(context, 'حداکثر تعداد مجاز: $available');
-                  }
-                },
-                child: Container(
-                  width: 64,
-                  height: 48,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black12, blurRadius: 4)
-                    ],
-                  ),
-                  child:
-                      const Icon(Icons.add, size: 28, color: Color(0xFF2E7D32)),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 20),
-
-          // نمایش جمله: "۱ بسته‌ی ۶۰ گرمی معادل ۶۰ گرم"
-          Center(
-            child: Text(
-              '${(qty)} بسته‌ی ${(selectedPacking)} گرمی معادل ${((selectedPacking * qty).round())} گرم',
-              style: t.titleLarge?.copyWith(color: Colors.red),
-              textDirection: TextDirection.rtl,
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // انتخاب نوع پرداخت (برای انتخاب درصد افر)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // غیرنقدی
-              Row(
-                children: [
-                  Radio<PaymentType>(
-                    value: PaymentType.nonCash,
-                    groupValue: paymentType,
-                    onChanged: (v) => setState(() => paymentType = v!),
-                    activeColor: const Color(0xFF2E7D32),
-                  ),
-                  Text('غیر نقدی',
-                      style: t.titleMedium, textDirection: TextDirection.rtl),
-                ],
-              ),
-              const SizedBox(width: 28),
-              // نقدی (همراه با افر)
-              Row(
-                children: [
-                  Radio<PaymentType>(
-                    value: PaymentType.cashWithOffer,
-                    groupValue: paymentType,
-                    onChanged: (v) => setState(() => paymentType = v!),
-                    activeColor: const Color(0xFF2E7D32),
-                  ),
-                  Text('نقدی (همراه با افر)',
-                      style: t.titleMedium, textDirection: TextDirection.rtl),
-                ],
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          // دکمه افزودن به سبد
-          SizedBox(
-              height: 56,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF43A047),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                ),
-                onPressed: () async {
-                  // موجودی بسته‌ی انتخاب‌شده
-                  final available = checkMojodePack(
-                    packingJson: widget.hotel.packing,
-                    selectedPacking: selectedPacking,
-                  );
-
-                  if (available <= 0) {
-                    _showSnack(context, 'این بسته موجود نیست');
-                    return;
-                  }
-
-                  if (qty > available) {
-                    _showSnack(context, 'حداکثر موجودی این بسته: $available');
-                    // می‌تونی بخوای خودت خودکار اصلاحش کنی:
-                    // setState(() => qty = available);
-                    return;
-                  }
-
-                  // (اختیاری) رعایت حداقل/حداکثر خرید از خود محصول
-                  final minLimit =
-                      _asInt(widget.hotel.minNumber); // اگر رشته است
-                  final maxLimit = _asInt(widget.hotel.maxNumber);
-
-                  if (maxLimit > 0 && qty > maxLimit) {
-                    _showSnack(context, 'حداکثر تعداد مجاز: $maxLimit');
-                    return;
-                  }
-
-                  // در این نقطه همه‌چیز اوکیه → افزودن به سبد
-                  // priceAllWithOffer همون عدد نهایی محاسبه‌شده‌ست (اگر بالا محاسبه کردی).
-                  // TODO: کالای انتخابی رو به سبد اضافه کن
-                  // cartProvider.addItem(product: widget.hotel, packing: selectedPacking, qty: qty, price: priceAllWithOffer);
-
-                  // _showSnack(context, 'به سبد افزوده شد');
-
-                  // showDialog(
-                  //   context: context,
-                  //   barrierDismissible: false,
-                  //   builder: (_) => const Center(child: CircularProgressIndicator()),
-                  // );
-
-                   var data={
-                    'naghdi':
-                    paymentType == PaymentType.cashWithOffer ? "1" : "0",
-                    'number': qty.toString(),
-                    'price': priceAllWithOffer.toString(),
-                    'packing': selectedPacking,
-                    'id_packing_holo': widget.hotel.idHolo,
-                    'ad_id': widget.hotel.id,
-                    'status': widget.hotel.status,
-                  };
-                  final response = await ApiService.post(
-                    'temp_product_new',
-                    data: data,
-                    
-                  );
-                  
-                  print(data);
-                  print(response);
-                  if (response['status'] == 'ok') {
-                    // isCodeSent = true;
-                    // notifyListeners();
-                    _showSnack(context, "✅ محصول با موفقیت به سبد اضافه شد");
-                    Navigator.pop(context);
-                  } else if (response == "ok") {
-                    Navigator.pop(context);
-                    _showSnack(context, "✅ محصول با موفقیت به سبد اضافه شد");
-                  } else if (response == "a") {
-                    _showSnack(
-                        context, "⚠️ موجودی کافی نیست، بعداً مجدد بررسی کنید");
-                  } else if (response == "not_enough") {
-                    _showSnack(context, "❌ موجودی این محصول کافی نیست");
-                  } else {
-                    _showSnack(context, "⚠️ خطا در دریافت اطلاعات از سرور");
-                  }
-                  // await sendBuyRequest(
-                  //   context: context,
-                  //   hotel: widget.hotel,
-                  //   selectedPacking: selectedPacking,
-                  //   qty: qty,
-                  //   // یا از SharedPrefs بگیر
-                  //   naghdi:
-                  //       paymentType == PaymentType.cashWithOffer ? "1" : "0",
-                  //   priceAllWithOffer: priceAllWithOffer.toDouble(),
-                  //   userId: 0,
-                  // );
-                },
-                child: Text('افزودن به سبد خرید',
-                    style: t.titleLarge?.copyWith(color: Colors.white)),
-              )),
-        ],
-      ),
-    );
-  }
-}
-
-void _showSnack(BuildContext context, String msg) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(msg, textDirection: TextDirection.rtl)),
-  );
-}
-
-double asDouble(dynamic v) {
-  if (v == null) return 0;
-  if (v is num) return v.toDouble();
-  if (v is String) {
-    // اگر رقم‌ها جداکننده هزارگان دارند، حذفش کن
-    final s = v.replaceAll(',', '').trim();
-    return double.tryParse(s) ?? 0;
-  }
-  return 0;
-}
-
-String _toLatinDigits(String s) {
-  const fa = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '٬', '،'];
-  const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', ','];
-  for (var i = 0; i < fa.length; i++) {
-    s = s.replaceAll(fa[i], en[i]);
-  }
-  return s;
-}
-
-int _asInt(dynamic v) {
-  if (v == null) return 0;
-  if (v is num) return v.toInt();
-  final s = _toLatinDigits(v.toString()).replaceAll(',', '').trim();
-  return int.tryParse(s) ?? 0;
-}
-
+// ========== Info Row ==========
 bool _isBlank(String? s) => s == null || s.trim().isEmpty;
 
 class _InfoRow extends StatelessWidget {
@@ -766,7 +257,6 @@ class _InfoRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // مقدار در چپ
         Expanded(
           child: Text(
             value,
@@ -778,14 +268,12 @@ class _InfoRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        // برچسب + آیکون در راست
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               label,
-              style:
-                  textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.right,
               textDirection: TextDirection.rtl,
             ),
@@ -798,36 +286,288 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-/// packingJson: رشته‌ی برگشتی از سرور (مثلاً:
-///   '[{"id":505170,"id_product_holo":505170,"number":1425,"vazn":25}]')
-/// selectedPacking: وزنی که کاربر در Dropdown انتخاب کرده (مثلاً 25.0)
-int checkMojodePack(
-    {required String? packingJson, required double selectedPacking}) {
-  if (packingJson == null || packingJson.trim().isEmpty) return 0;
+// ========== Helpers ==========
+double asDouble(dynamic v) {
+  if (v == null) return 0;
+  if (v is num) return v.toDouble();
+  if (v is String) {
+    final s = v.replaceAll(',', '').trim();
+    return double.tryParse(s) ?? 0;
+  }
+  return 0;
+}
 
+int _asInt(dynamic v) {
+  if (v == null) return 0;
+  if (v is num) return v.toInt();
+  final s = v.toString().replaceAll(',', '').trim();
+  return int.tryParse(s) ?? 0;
+}
+
+String _toLatinDigits(String s) {
+  const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹','٬','،'];
+  const en = ['0','1','2','3','4','5','6','7','8','9',',',','];
+  for (var i = 0; i < fa.length; i++) {
+    s = s.replaceAll(fa[i], en[i]);
+  }
+  return s;
+}
+
+/// parsing JSON packing → لیست وزن‌ها
+List<double> packingsFromString(String? packingJson) {
+  if (packingJson == null || packingJson.trim().isEmpty) return [];
   try {
     final raw = _toLatinDigits(packingJson.trim());
     final decoded = jsonDecode(raw);
+    if (decoded is List) {
+      return decoded.map<double>((e) => asDouble(e['vazn'])).where((v) => v > 0).toList();
+    }
+    if (decoded is Map) {
+      final v = asDouble(decoded['vazn']);
+      return v > 0 ? [v] : [];
+    }
+  } catch (_) {}
+  return [];
+}
 
+/// موجودی برای وزن انتخابی
+int checkMojodePack({required String? packingJson, required double selectedPacking}) {
+  if (packingJson == null || packingJson.trim().isEmpty) return 0;
+  try {
+    final raw = _toLatinDigits(packingJson.trim());
+    final decoded = jsonDecode(raw);
     if (decoded is List) {
       for (final e in decoded) {
         if (e is Map) {
           final v = asDouble(e['vazn']);
-          if ((v - selectedPacking).abs() < 1e-6) {
-            // اگر کلید 'number' وجود نداشت، 0 برمی‌گرده
-            return _asInt(e['number']);
-          }
+          if ((v - selectedPacking).abs() < 1e-6) return _asInt(e['number']);
         }
       }
     } else if (decoded is Map) {
-      // در صورتی که سرور یک آبجکت تکی فرستاده باشد
       final v = asDouble(decoded['vazn']);
-      if ((v - selectedPacking).abs() < 1e-6) {
-        return _asInt(decoded['number']);
-      }
+      if ((v - selectedPacking).abs() < 1e-6) return _asInt(decoded['number']);
     }
-  } catch (_) {
-    // اگر JSON نبود (مثلاً CSV ساده)، اطلاعات number نداریم → 0
-  }
+  } catch (_) {}
   return 0;
+}
+
+void _showSnack(BuildContext context, String msg) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg, textDirection: TextDirection.rtl)));
+}
+
+// ========== Pricing Section ==========
+enum PaymentType { nonCash, cashWithOffer }
+
+class _PricingSection extends StatefulWidget {
+  final Product hotel;
+  const _PricingSection({required this.hotel});
+
+  @override
+  State<_PricingSection> createState() => _PricingSectionState();
+}
+
+class _PricingSectionState extends State<_PricingSection> {
+  late double selectedPacking;
+  int qty = 1;
+  PaymentType paymentType = PaymentType.nonCash;
+
+  @override
+  void initState() {
+    super.initState();
+    final packs = packingsFromString(widget.hotel.packing);
+    selectedPacking = packs.isNotEmpty ? packs.first : 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).textTheme;
+
+    final double pricePerUnit = asDouble(widget.hotel.priceVazn);
+    final List<double> packings = packingsFromString(widget.hotel.packing);
+
+    final double offerPercent = paymentType == PaymentType.nonCash
+        ? asDouble(widget.hotel.offer)
+        : asDouble(widget.hotel.offerTwo);
+
+    final double pricePerSelectedPack = pricePerUnit * selectedPacking;
+    final double priceAll = pricePerSelectedPack * qty;
+    final int priceOfferAccrued = (priceAll * offerPercent / 100).round();
+    final int priceAllWithOffer = (priceAll - priceOfferAccrued).round();
+
+    Widget line() => Container(height: 2, color: const Color(0xFF2E7D32), margin: const EdgeInsets.symmetric(vertical: 10));
+
+    Widget rowPrice({required String label, required int value, Color? valueColor, TextStyle? labelStyle}) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(' ${formatPrice(value)} ریال', style: t.bodyMedium?.copyWith(color: valueColor ?? Colors.black87, fontWeight: FontWeight.w600), textDirection: TextDirection.rtl),
+            Text(label, style: labelStyle ?? t.titleMedium, textDirection: TextDirection.rtl),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          line(),
+          rowPrice(label: 'قیمت هر بسته انتخاب‌شده', value: pricePerSelectedPack.round(), valueColor: Colors.blue),
+          rowPrice(label: 'قیمت هر بسته × تعداد', value: priceAll.round(), valueColor: Colors.blue, labelStyle: t.bodyMedium),
+          rowPrice(label: 'مبلغ افر شما', value: priceOfferAccrued, valueColor: Colors.red),
+          rowPrice(label: 'مبلغ قابل پرداخت پس از افر', value: priceAllWithOffer, valueColor: Colors.red),
+          line(),
+
+          Center(child: Text('انتخاب بسته‌بندی', style: t.headlineSmall, textDirection: TextDirection.rtl)),
+          const SizedBox(height: 12),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('گرمی', style: t.titleMedium, textDirection: TextDirection.rtl),
+              const SizedBox(width: 12),
+              DropdownButton<double>(
+                value: selectedPacking,
+                items: packings.map((g) => DropdownMenuItem(
+                  value: g,
+                  child: Text(g % 1 == 0 ? g.toStringAsFixed(0) : g.toString(), textDirection: TextDirection.ltr),
+                )).toList(),
+                onChanged: (v) => setState(() => selectedPacking = v ?? selectedPacking),
+              ),
+              const SizedBox(width: 12),
+              Text('بستهٔ', style: t.titleMedium, textDirection: TextDirection.rtl),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          Center(child: Text('تعداد', style: t.headlineSmall, textDirection: TextDirection.rtl)),
+          const SizedBox(height: 12),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: () => setState(() => qty = qty > 1 ? qty - 1 : 1),
+                child: Container(
+                  width: 64, height: 48, alignment: Alignment.center,
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)]),
+                  child: const Icon(Icons.remove, size: 28, color: Colors.red),
+                ),
+              ),
+              const SizedBox(width: 24),
+              Text('$qty', style: t.headlineMedium),
+              const SizedBox(width: 24),
+              InkWell(
+                onTap: () {
+                  final available = checkMojodePack(packingJson: widget.hotel.packing, selectedPacking: selectedPacking);
+                  if (available <= 0) return _showSnack(context, 'موجودی این بسته صفر است');
+                  if (qty < available) setState(() => qty++);
+                  else _showSnack(context, 'حداکثر تعداد مجاز: $available');
+                },
+                child: Container(
+                  width: 64, height: 48, alignment: Alignment.center,
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)]),
+                  child: const Icon(Icons.add, size: 28, color: Color(0xFF2E7D32)),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          Center(
+            child: Text(
+              '$qty بسته‌ی ${selectedPacking.toStringAsFixed(selectedPacking % 1 == 0 ? 0 : 2)} گرمی = ${(selectedPacking * qty).round()} گرم',
+              style: t.titleLarge?.copyWith(color: Colors.red),
+              textDirection: TextDirection.rtl,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(children: [
+                Radio<PaymentType>(
+                  value: PaymentType.nonCash,
+                  groupValue: paymentType,
+                  onChanged: (v) => setState(() => paymentType = v!),
+                  activeColor: const Color(0xFF2E7D32),
+                ),
+                Text('غیر نقدی', style: t.titleMedium, textDirection: TextDirection.rtl),
+              ]),
+              const SizedBox(width: 28),
+              Row(children: [
+                Radio<PaymentType>(
+                  value: PaymentType.cashWithOffer,
+                  groupValue: paymentType,
+                  onChanged: (v) => setState(() => paymentType = v!),
+                  activeColor: const Color(0xFF2E7D32),
+                ),
+                Text('نقدی (همراه با افر)', style: t.titleMedium, textDirection: TextDirection.rtl),
+              ]),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          SizedBox(
+            height: 56,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF43A047),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
+              onPressed: () async {
+                final available = checkMojodePack(packingJson: widget.hotel.packing, selectedPacking: selectedPacking);
+                if (available <= 0) return _showSnack(context, 'این بسته موجود نیست');
+                if (qty > available) return _showSnack(context, 'حداکثر موجودی این بسته: $available');
+
+                final minLimit = _asInt(widget.hotel.minNumber);
+                final maxLimit = _asInt(widget.hotel.maxNumber);
+                if (minLimit > 0 && qty < minLimit) return _showSnack(context, 'حداقل تعداد مجاز: $minLimit');
+                if (maxLimit > 0 && qty > maxLimit) return _showSnack(context, 'حداکثر تعداد مجاز: $maxLimit');
+
+                final int offerPercent = (paymentType == PaymentType.nonCash
+                    ? asDouble(widget.hotel.offer)
+                    : asDouble(widget.hotel.offerTwo)).round();
+
+                final double pricePerUnit = asDouble(widget.hotel.priceVazn);
+                final int priceAllWithOffer = (pricePerUnit * selectedPacking * qty * (100 - offerPercent) / 100).round();
+
+                final data = {
+                  'naghdi': paymentType == PaymentType.cashWithOffer ? "1" : "0",
+                  'number': qty.toString(),
+                  'price': priceAllWithOffer.toString(),
+                  'packing': selectedPacking,
+                  'id_packing_holo': widget.hotel.idHolo,
+                  'ad_id': widget.hotel.id,
+                  'status': widget.hotel.status,
+                };
+
+                final response = await ApiService.post('temp_product_new', data: data);
+                if (response is Map && response['status'] == 'ok') {
+                  _showSnack(context, "✅ محصول با موفقیت به سبد اضافه شد");
+                  Navigator.pop(context);
+                } else if (response == "ok") {
+                  _showSnack(context, "✅ محصول با موفقیت به سبد اضافه شد");
+                  Navigator.pop(context);
+                } else if (response == "a" || response == "not_enough") {
+                  _showSnack(context, "❌ موجودی این محصول کافی نیست");
+                } else {
+                  _showSnack(context, "⚠️ خطا در دریافت اطلاعات از سرور");
+                }
+              },
+              child: Text('افزودن به سبد خرید', style: t.titleLarge?.copyWith(color: Colors.white)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

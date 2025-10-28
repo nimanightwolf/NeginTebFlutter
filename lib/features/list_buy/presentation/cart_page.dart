@@ -236,11 +236,11 @@ class _SummaryBar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _row('مبلغ کل :', 'ریال $total', t),
+          _row(': مبلغ کل ', ' $totalریال ', t),
           const SizedBox(height: 6),
-          _row('مجموع تخفیفات :', 'ریال $discount', t),
+          _row(': مجموع تخفیفات ', '$discount ریال ', t),
           const SizedBox(height: 6),
-          _row('مبلغ قابل پرداخت :', 'ریال $payable', t, bold: true),
+          _row(': مبلغ قابل پرداخت ', ' $payableریال ', t, bold: true),
           const SizedBox(height: 10),
           SizedBox(
             width: double.infinity,
@@ -263,8 +263,8 @@ class _SummaryBar extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(l, style: t.titleMedium?.copyWith(color: Colors.black87, fontWeight: bold ? FontWeight.w800 : FontWeight.w600)),
-        Text(r, style: t.titleMedium),
+        Text(textDirection: TextDirection.rtl,l, style: t.titleMedium?.copyWith(color: Colors.black87, fontWeight: bold ? FontWeight.w800 : FontWeight.w600)),
+        Text(r, style: t.titleMedium,textDirection: TextDirection.ltr),
       ],
     );
   }
