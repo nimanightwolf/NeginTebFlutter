@@ -8,7 +8,6 @@ import 'package:neginteb/core/theme/app_theme.dart';
 import 'package:neginteb/core/theme/theme_provider.dart';
 import 'package:neginteb/features/booking/presentation/booking_provider.dart';
 import 'package:neginteb/features/home/data/repositories/hotel_repository.dart';
-import 'package:neginteb/features/home/data/repositories/profile_repository.dart';
 import 'package:neginteb/features/home/presentation/provider/favorite_item_provider.dart';
 import 'package:neginteb/features/home/presentation/provider/home_provider.dart';
 import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
@@ -83,8 +82,7 @@ void main() async {
           create: (_) => OnboardingProvider(OnboardingRepository())),
       ChangeNotifierProvider(create: (_) => BookingProvider()),
       ChangeNotifierProvider(create: (_) => HomeProvider(hotelRepository)),
-      ChangeNotifierProvider(
-          create: (_) => ProfileProvider(ProfileRepository(), hotelRepository)),
+
       ChangeNotifierProvider(
           create: (_) => FavotireItemProvider(hotelRepository)),
       ChangeNotifierProvider(create: (_) => LoginProvider()),
@@ -94,7 +92,8 @@ void main() async {
       // اضافه کردن ProductProvider
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => MessageProvider()),
-      ChangeNotifierProvider(create: (_) => HistoryProvider())
+      ChangeNotifierProvider(create: (_) => HistoryProvider()),
+      ChangeNotifierProvider(create: (_) => ProfileProvider()),
 
       // ChangeNotifierProvider(
       //   create: (_) => ProductProvider(productRepository: productRepository),

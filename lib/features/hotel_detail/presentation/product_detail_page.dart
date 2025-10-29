@@ -48,8 +48,10 @@ class ProductDetailPage extends StatelessWidget {
         // ثبت مشاهده اخیر و لود محصولات پروفایل
         WidgetsBinding.instance.addPostFrameCallback((_) {
           context.read<ProfileProvider>().addRecentlyViewed(product.id);
-          context.read<ProfileProvider>().loadProfileProducts(context);
         });
+
+
+
 
         return Scaffold(
           body: CustomScrollView(
@@ -526,11 +528,11 @@ class _PricingSectionState extends State<_PricingSection> {
               onPressed: () async {
                 final available = checkMojodePack(packingJson: widget.hotel.packing, selectedPacking: selectedPacking);
                 if (available <= 0) return _showSnack(context, 'این بسته موجود نیست');
-                if (qty > available) return _showSnack(context, 'حداکثر موجودی این بسته: $available');
+                //if (qty > available) return _showSnack(context, 'حداکثر موجودی این بسته: $available');
 
                 final minLimit = _asInt(widget.hotel.minNumber);
                 final maxLimit = _asInt(widget.hotel.maxNumber);
-                if (minLimit > 0 && qty < minLimit) return _showSnack(context, 'حداقل تعداد مجاز: $minLimit');
+                // if (minLimit > 0 && qty < minLimit) return _showSnack(context, 'حداقل تعداد مجاز: $minLimit');
                 if (maxLimit > 0 && qty > maxLimit) return _showSnack(context, 'حداکثر تعداد مجاز: $maxLimit');
 
                 final int offerPercent = (paymentType == PaymentType.nonCash

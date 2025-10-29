@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../history/presentation/history_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -69,10 +68,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 Stack(
                   children: [
                     CircleAvatar(
-                        radius: 55,
-                        backgroundImage: _image != null
-                            ? FileImage(_image!)
-                            : NetworkImage(profile.avatarUrl) as ImageProvider),
+                      radius: 55,
+                      backgroundImage:
+                          const AssetImage('assets/icon/icon.png')             // ✅
+                    ),
                     Positioned(
                         right: 0,
                         bottom: 0,
@@ -101,10 +100,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 SizedBox(
-                  height: 4,
+                  height: 8,
                 ),
                 Text(
-                  profile.email,
+                " مبلغ پورسانت شما:${profile.comion.toString()} ریال ",
                   style: Theme.of(context)
                       .textTheme
                       .headlineSmall!
@@ -113,12 +112,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   height: 24,
                 ),
-                ProfileOptionItem(
-                  title: "اطلاعات صفحه کاربری",
-                  icon: Icons.person_outline,
-                  onTap: () =>
-                      _showSnackbar(context, "مشاهده اطلاعات صفحه کاربری"),
-                ),
+                // ProfileOptionItem(
+                //   title: "اطلاعات صفحه کاربری",
+                //   icon: Icons.person_outline,
+                //   onTap: () =>
+                //       _showSnackbar(context, "مشاهده اطلاعات صفحه کاربری"),
+                // ),
                 ProfileOptionItem(
                   title: "اعلان ها",
                   icon: Icons.notifications_outlined,
@@ -126,26 +125,26 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 ProfileOptionItem(
                   title: "تاریخچه خرید",
-                  icon: Icons.favorite_outline,
+                  icon: Icons.history_outlined,
                   onTap: () => Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const HistoryPage())),
                 ),
-                ProfileOptionItem(
-                  title: "فراموشی رمز عبور",
-                  icon: Icons.key_outlined,
-                  onTap: () =>
-                      _showSnackbar(context, "تغییر یا بازیابی رمز عبور"),
-                ),
-                ProfileOptionItem(
-                  title: "روش های پرداخت",
-                  icon: Icons.credit_card_outlined,
-                  onTap: () => _showSnackbar(context, "مشاهده روش‌های پرداخت"),
-                ),
-                ProfileOptionItem(
-                  title: "تنظیمات",
-                  icon: Icons.settings_outlined,
-                  onTap: () => _showSnackbar(context, "تنظیمات پروفایل کاربری"),
-                ),
+                // ProfileOptionItem(
+                //   title: "فراموشی رمز عبور",
+                //   icon: Icons.key_outlined,
+                //   onTap: () =>
+                //       _showSnackbar(context, "تغییر یا بازیابی رمز عبور"),
+                // ),
+                // ProfileOptionItem(
+                //   title: "روش های پرداخت",
+                //   icon: Icons.credit_card_outlined,
+                //   onTap: () => _showSnackbar(context, "مشاهده روش‌های پرداخت"),
+                // ),
+                // ProfileOptionItem(
+                //   title: "تنظیمات",
+                //   icon: Icons.settings_outlined,
+                //   onTap: () => _showSnackbar(context, "تنظیمات پروفایل کاربری"),
+                // ),
               ],
             ),
           )),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neginteb/features/history/presentation/history_provider.dart';
 import 'package:neginteb/features/history/presentation/widget/history_card.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class HistoryPage extends StatefulWidget {
@@ -22,15 +23,15 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Future<void> _openUrl(String url) async {
     final uri = Uri.parse(url);
-    // if (await canLaunchUrl(uri)) {
-    //   await launchUrl(uri, mode: LaunchMode.externalApplication);
-    // } else {
-    //   if (mounted) {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       const SnackBar(content: Text('امکان بازکردن درگاه وجود ندارد')),
-    //     );
-    //   }
-    // }
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('امکان بازکردن درگاه وجود ندارد')),
+        );
+      }
+    }
   }
 
   @override

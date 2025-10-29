@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:neginteb/features/home/presentation/provider/home_provider.dart';
 import 'package:neginteb/features/home/presentation/provider/product_provider.dart';
 import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
 import 'package:neginteb/features/home/presentation/widgets/ad_banner.dart';
@@ -60,15 +59,15 @@ class HomePage extends StatelessWidget {
                 return ProductVerticalList(title: "جدیدترین محصولات", product: productProvider.getPopularProductsFromDatabase());
               },
             ),
-            Consumer<ProfileProvider>(
-              builder: (context, profileProvider, child) {
-                if (profileProvider.recentlyViewedProducts.isNotEmpty) {
-                  return ProductListSection(
-                      title: "بازدید های اخیر", product: profileProvider.recentlyViewedProducts);
-                } else {
-                  return SizedBox();
+            Consumer2<ProfileProvider, ProductProvider>(
+                builder: (context, prof, prod, _) {
+                  final items = prof.recentlyViewedProducts(prod);
+                  if (items.isEmpty) return const SizedBox.shrink();
+                 return ProductListSection(
+                      title: "بازدید های اخیر", product: items
+
+                  );
                 }
-              },
             )
           ],
         ),

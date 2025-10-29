@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../data/models/message_model.dart';
-import '../../presentation/message_provider.dart';
 
 class MessageBubble extends StatelessWidget {
   final ChatMessage msg;
@@ -14,9 +14,9 @@ class MessageBubble extends StatelessWidget {
 
   Future<void> _openUrl(String url) async {
     final uri = Uri.parse(url);
-    // if (await canLaunchUrl(uri)) {
-    //   await launchUrl(uri, mode: LaunchMode.externalApplication);
-    // }
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 
   @override

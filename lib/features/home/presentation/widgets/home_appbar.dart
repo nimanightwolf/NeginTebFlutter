@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:neginteb/core/theme/theme_provider.dart';
 import 'package:neginteb/features/home/presentation/provider/profile_provider.dart';
+import 'package:neginteb/features/message/presentation/message_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../message/presentation/pages/messages_page.dart';
@@ -32,10 +33,10 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         Icons.notifications_none,
                         color: Colors.grey,
                       )),
-                  Consumer<ProfileProvider>(
-                    builder: (context, profileProvider, child) {
-                      return profileProvider.profile?.notifications != null &&
-                              profileProvider.profile!.notifications > 0
+                  Consumer<MessageProvider>(
+                    builder: (context, messageProvider, child) {
+                      return messageProvider.unreadCount() != null &&
+                          messageProvider.unreadCount() > 0
                           ? Positioned(
                               right: 12,
                               top: 14,
@@ -70,11 +71,16 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   const SizedBox(
                     width: 8,
                   ),
+                  // CircleAvatar(
+                  //   radius: 20,
+                  //   // backgroundImage: NetworkImage(profileProvider.profile?. ??
+                  //   //     "https://www.w3schools.com/howto/img_avatar.png"),
+                  // )
                   CircleAvatar(
-                    radius: 20,
-                    backgroundImage: NetworkImage(profileProvider.profile?.avatarUrl ??
-                        "https://www.w3schools.com/howto/img_avatar.png"),
-                  )
+                      radius: 20,
+                      backgroundImage:
+                      const AssetImage('assets/icon/icon.png')             // ✅
+                  ),
                 ],
               );
             },
